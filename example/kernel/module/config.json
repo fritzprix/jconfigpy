@@ -1,0 +1,11 @@
+{
+  "FS" : {
+    "type" : "tristate",
+    "default" : "n",
+    "prompt" : ""
+  },
+  "FS_CONFIG" : {
+    "type" : "source",
+    "path" : "./fs/config.json"
+  }
+}

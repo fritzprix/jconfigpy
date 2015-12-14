@@ -1,0 +1,12 @@
+{
+  "SEMAPHORE" : {
+    "type" : "bool",
+    "prompt" : "Use Counting semaphore",
+    "default" : "n",
+    "help" : []
+  },
+  "MODULE_CONFIG" : {
+    "type" : "config",
+    "path" : "./module/config.json"
+  }
+}
