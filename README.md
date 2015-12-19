@@ -12,7 +12,7 @@
 small set of syntax for ease of use. it also provides scalabilty to project combined with GNU Makefile. however, it makes makefile too verbose unnecessarily and doesn't support dynamic visibility update of configuration parameter on-the-go.
 
 ## Structure
-![Alt diagram](https://drive.google.com/open?id=0B_z-TfXHpPZxa21uRC1FQjlDblE)
+![Alt diagram](https://drive.google.com/drive/my-drive/jconfigpy.png)
 
 ## Feature
 1. JSON based configuration script (ease of use)
