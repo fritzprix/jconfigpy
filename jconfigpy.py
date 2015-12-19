@@ -491,7 +491,7 @@ class JConfig:
             gen = item.get_genlist()
             if len(gen) > 0:
                 for gi in gen:
-                    fp.write('#define {0} {1}\n'.format(gi,gen[gi]))
+                    fp.write('#define {0} \t {1}\n'.format(gi,gen[gi]))
 
         for child in self._child:
             child.write_genlist(fp)
