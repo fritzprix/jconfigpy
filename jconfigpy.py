@@ -128,6 +128,11 @@ class JConfigItem:
         genlist = {}
         if not len(self._gen_list) > 0:
             return genlist
+        to_int = self.to_int
+        to_bool = self.to_bool
+        to_tristate = self.to_tristate
+        to_hex = self.to_hex
+        to_string = self.to_string
         this = self.get_user_value()
         if this is None: # just for preventing 'this' from unused
             return
@@ -140,6 +145,21 @@ class JConfigItem:
 
     def is_visible(self):
         return self._visibility
+
+    def to_hex(self, val):
+        raise NotImplementedError(JConfigItem._NIE_MESSAGE.format(JConfigItem.to_hex))
+
+    def to_int(self, val):
+        raise NotImplementedError(JConfigItem._NIE_MESSAGE.format(JConfigItem.to_int))
+
+    def to_bool(self, val):
+        raise NotImplementedError(JConfigItem._NIE_MESSAGE.format(JConfigItem.to_bool))
+
+    def to_tristate(self, val):
+        raise NotImplementedError(JConfigItem._NIE_MESSAGE.format(JConfigItem.to_tristate))
+
+    def to_string(self, val):
+        raise NotImplementedError(JConfigItem._NIE_MESSAGE.format(JConfigItem.to_string))
 
     def __init__(self, name, type_, var_pub, **kwargs):
         self._user_val = None
@@ -193,6 +213,30 @@ class JConfigString(JConfigItem):
             raise ValueError('string type should not be empty ')
         JConfigItem.set_user_value(self, val)
 
+    def to_bool(self, val):
+        if self.is_visible():
+            return "y"
+        else:
+            return "n"
+
+    def to_int(self, val):
+        if self.is_visible():
+            return 1
+        else:
+            return 0
+
+    def to_hex(self, val):
+        if self.is_visible():
+            return "0x01"
+        else:
+            return "0x00"
+
+    def to_tristate(self, val):
+        if self.is_visible():
+            return "y"
+        else:
+            return "n"
+
     def __init__(self, name, var_pub, **kwargs):
 
         self._prompt = ""
@@ -219,6 +263,32 @@ class JConfigTristate(JConfigItem):
     _DEFAULT_HELP = [
         'No Help Message'
     ]
+
+    def to_int(self, val):
+        if val == "y":
+            return 2
+        elif val == "n":
+            return 1
+        return 0
+
+    def to_hex(self, val):
+        if val == "y":
+            return "0x2"
+        elif val == "n":
+            return "0x1"
+        return "0x0"
+
+    def to_bool(self, val):
+        if val == "y" or val == "m":
+            return "y"
+        return "n"
+
+    def to_string(self, val):
+        if val == "y":
+            return "STATIC"
+        elif val == "m":
+            return "DYNAMIC"
+        return "NONE"
 
     def get_help(self):
         return self._help
@@ -258,6 +328,26 @@ class JConfigBool(JConfigItem):
         'No Help Message'
     ]
 
+    def to_string(self, val):
+        if val == 'y':
+            return "TRUE"
+        return "FALSE"
+
+    def to_hex(self, val):
+        if val == 'y':
+            return "0x01"
+        return "0x00"
+
+    def to_int(self, val):
+        if val == 'y':
+            return 1
+        return 0
+
+    def to_tristate(self, val):
+        if val == 'y':
+            return 'y'
+        return 'n'
+
     def get_help(self):
         return self._help
 
@@ -293,6 +383,21 @@ class JConfigEnum(JConfigItem):
     _DEFAULT_HELP = [
         'No Help Message'
     ]
+
+    def to_tristate(self, val):
+        return "y"
+
+    def to_int(self, val):
+        return self._enum.index(val)
+
+    def to_hex(self, val):
+        return "{:x}".format(self.to_int(val))
+
+    def to_string(self, val):
+        return val
+
+    def to_bool(self, val):
+        return "y"
 
     def __init__(self, name, var_pub, **kwargs):
         self._enum = []
@@ -335,6 +440,22 @@ class JConfigHex(JConfigItem):
     _DEFAULT_HELP = [
         'No Help Message'
     ]
+
+    def to_bool(self, val):
+        if int(val, 16) == 0:
+            return "n"
+        return "y"
+
+    def to_int(self, val):
+        return int(val, 16)
+
+    def to_string(self, val):
+        return val
+
+    def to_tristate(self, val):
+        if int(val, 16) == 0:
+            return "n"
+        return "y"
 
     def __init__(self, name, var_pub, **kwargs):
         self._prompt = ''
@@ -383,6 +504,22 @@ class JConfigInt(JConfigItem):
     _DEFAULT_HELP = [
         'No Help Message'
     ]
+
+    def to_tristate(self, val):
+        if val == 0:
+            return "n"
+        return "y"
+
+    def to_string(self, val):
+        return str(val)
+
+    def to_bool(self, val):
+        if val == 0:
+            return "n"
+        return "y"
+
+    def to_hex(self, val):
+        return "{:x}".format(val)
 
     def __init__(self, name, var_pub, **kwargs):
         self._prompt = ''
@@ -612,7 +749,8 @@ JCONFIG_HELP_STRING = '----------------------------------------------------\n' \
                       '-c : -c initiate configuration\n' \
                       '-i [file] : define input file explicitly\n' \
                       '-u [t/g]  : set ui type for configuration (default text mode)\n' \
-                      '-s [file] : load configuration from file\n'
+                      '-s [file] : load configuration from file\n' \
+                      '-g [file] : specify name of header file for preprocessor macro'
 
 
 def print_help(item):
@@ -828,7 +966,7 @@ def init_text_mode_config(argv):
             if len(argv) <= idx + 1:
                 return
             result_file = argv[idx + 1]
-        if '-h' in arg:
+        if '-g' in arg:
             if len(argv) <= idx + 1:
                 return
             autogen_header = argv[idx + 1]
