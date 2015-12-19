@@ -762,7 +762,7 @@ def prompt_int(item):
 def prompt_hex(item):
     if not isinstance(item, JConfigHex):
         return
-    if item.is_visible():
+    if not item.is_visible():
         return
     print('\nCONFIG_{0}'.format(item.get_name()))
     val = 'h'

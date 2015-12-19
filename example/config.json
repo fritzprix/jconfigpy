@@ -45,6 +45,7 @@
   },
   "STACK_LIMIT":{
     "type":"hex",
+    "default":"0x2001000",
     "range":["0x2000000", "0x2004000"]
   },
   "TEST_TRISTATE":{
