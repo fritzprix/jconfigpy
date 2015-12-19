@@ -120,31 +120,43 @@ class JConfigItem:
     def on_update_var(self, var, update_val):
         if var in self._depend:
             self._depend.update({var: update_val})
-            self._visiblility = self._var_pub.check_depend(**self._depend)
+            self._visibility = self._var_pub.check_depend(**self._depend)
             return True
         return False
+
+    def get_genlist(self):
+        genlist = {}
+        if not len(self._gen_list) > 0:
+            return genlist
+        this = self.get_user_value()
+        if this is None: # just for preventing 'this' from unused
+            return
+        for key in self._gen_list:
+            genlist.update({key: eval(self._gen_list[key])})
+        return genlist
 
     def get_type(self):
         return self._type
 
     def is_visible(self):
-        return self._visiblility
+        return self._visibility
 
     def __init__(self, name, type_, var_pub, **kwargs):
         self._user_val = None
         self._def_val = kwargs.get('default', '')
         self._var_pub = None
         self._name = name
-        self._visiblility = True
+        self._visibility = True
         self._depend = kwargs.get('depend', {})
         self._type = type_
+        self._gen_list = kwargs.get('gen-list', {})
 
         if not isinstance(var_pub, ConfigVariableMonitor):
             raise TypeError(_TYPE_ERROR_FORMAT.format('var_pub', ConfigVariableMonitor))
         self._var_pub = var_pub
 
         if len(self._depend) > 0:
-            self._visiblility = var_pub.check_depend(**self._depend)
+            self._visibility = var_pub.check_depend(**self._depend)
             for var in enumerate(self._depend):
                 self._var_pub.subscribe_variable_change(var, self)  # subscribe variable change
 
@@ -154,7 +166,7 @@ class JConfigItem:
                                                  dval=self._def_val,
                                                  uval=self._user_val,
                                                  deplist=self._depend,
-                                                 visible=self._visiblility)
+                                                 visible=self._visibility)
 
     def __del__(self):
         if self._var_pub is None:
@@ -472,6 +484,18 @@ class JConfig:
         for child in self._child:
             child.write_recipe(fp)
 
+    def write_genlist(self, fp):
+        if not isinstance(fp, file):
+            return
+        for item in self._items:
+            gen = item.get_genlist()
+            if len(gen) > 0:
+                for gi in gen:
+                    fp.write('#define {0} {1}\n'.format(gi,gen[gi]))
+
+        for child in self._child:
+            child.write_genlist(fp)
+
     def is_visible(self):
         return self._visibility
 
@@ -719,8 +743,9 @@ def prompt_int(item):
             print_help(item)
         elif val == '':
             val = item.get_default_value()
+            print(val)
             if val is not '':
-                item.set_user_value()
+                item.set_user_value(val)
             else:
                 print('No default value')
                 print_help(item)
@@ -791,6 +816,7 @@ def prompt_config(config):
 def init_text_mode_config(argv):
     file_name = None
     result_file = '.config'
+    autogen_header = 'autogen.h'
     if '-i' not in argv:
         return
     for idx, arg in enumerate(argv):
@@ -802,6 +828,11 @@ def init_text_mode_config(argv):
             if len(argv) <= idx + 1:
                 return
             result_file = argv[idx + 1]
+        if '-h' in arg:
+            if len(argv) <= idx + 1:
+                return
+            autogen_header = argv[idx + 1]
+
     if not path.exists(file_name):
         raise FileNotExistError('File {} does not exist.'.format(file_name))
     root_config = JConfig(jconfig_file=file_name)
@@ -816,6 +847,8 @@ def init_text_mode_config(argv):
         monitor.write(ofp)
         root_config.write_recipe(ofp)
 
+    with open(autogen_header, 'w+') as agen:
+        root_config.write_genlist(agen)
 
 
 def load_saved_config(argv):

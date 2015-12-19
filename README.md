@@ -2,9 +2,9 @@
 > build configuration utility compatible to GNU Make utility
 
 ## About
-> I think managing C(and C++) projects that have large & complex source tree in scalable way is
+> managing C(and C++) projects that have large & complex source tree in scalable way is
 > very challenging task to many developers. I have investigated a few configuration utilities
-> and reached following conclusion eventually.
+> but no configuration utility fulfills my taste so far for reasons below.
 
 1. there are many C (or C++) projects that still use preprocessor macro (header file) as its configuration tools.  this method makes project less scalable. change to the project is painful because headers for configuration are added in directory whenever extension is added.
 

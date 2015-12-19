@@ -40,6 +40,7 @@
   },
   "PAGE_SIZE":{
     "type":"int",
+    "default":1024,
     "range":[1024, 4096]
   },
   "STACK_LIMIT":{
@@ -47,7 +48,8 @@
     "range":["0x2000000", "0x2004000"]
   },
   "TEST_TRISTATE":{
-    "type":"tristate"
+    "type":"tristate",
+    "default":"y"
   },
   "KERNL_CONFIG":
   {
@@ -67,6 +69,7 @@
   "STATIC_LINKED_USER":
   {
     "type":"bool",
+    "default":"y",
     "prompt":"make user level feature statically linked"
   },
   "USER_CONFIG":
@@ -81,6 +84,5 @@
   {
     "type":"recipe",
     "path":"./Makefile"
-
   }
 }

@@ -8,5 +8,13 @@
   "MODULE_CONFIG" : {
     "type" : "config",
     "path" : "./module/config.json"
+  },
+  "PAGE_SHIFT_SIZE":{
+    "type" : "int",
+    "range": [1, 16],
+    "gen-list":{
+      "CONFIG_PAGE_SIZE":"1 << this",
+      "CONFIG_PAGE_SHIFT":"this"
+    }
   }
 }
