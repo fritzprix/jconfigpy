@@ -11,6 +11,9 @@
 2. Some projects use dedicated configuration utility for its own purpose (ex. Kconfig in Linux). KConfig is kind of scripting language for linux kernel configuration that has
 small set of syntax for ease of use. it also provides scalabilty to project combined with GNU Makefile. however, it makes makefile too verbose unnecessarily and doesn't support dynamic visibility update of configuration parameter on-the-go.
 
+## Structure
+![Alt diagram](https://drive.google.com/open?id=0B_z-TfXHpPZxa21uRC1FQjlDblE)
+
 ## Feature
 1. JSON based configuration script (ease of use)
 2. Keep Makefile simple (good readability)
