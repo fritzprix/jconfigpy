@@ -6,6 +6,10 @@
 > very challenging task to many developers. I have investigated a few configuration utilities
 > but no configuration utility fulfills my taste so far for reasons below.
 
+## Getting Started
+> you can see how it works by input following in command line
+<script src="https://gist.github.com/fritzprix/2419b4e700cad3ea7553.js"></script>
+
 1. there are many C (or C++) projects that still use preprocessor macro (header file) as its configuration tools.  this method makes project less scalable. change to the project is painful because headers for configuration are added in directory whenever extension is added.
 
 2. Some projects use dedicated configuration utility for its own purpose (ex. Kconfig in Linux). KConfig is kind of scripting language for linux kernel configuration that has

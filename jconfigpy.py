@@ -124,7 +124,7 @@ class JConfigItem:
             return True
         return False
 
-    def get_genlist(self):
+    def get_resolved_genlist(self):
         genlist = {}
         if not len(self._gen_list) > 0:
             return genlist
@@ -134,8 +134,6 @@ class JConfigItem:
         to_hex = self.to_hex
         to_string = self.to_string
         this = self.get_user_value()
-        if this is None: # just for preventing 'this' from unused
-            return
         for key in self._gen_list:
             genlist.update({key: eval(self._gen_list[key])})
         return genlist
@@ -202,6 +200,9 @@ class JConfigString(JConfigItem):
         'No Help Message'
     ]
 
+    def to_string(self, val):
+        return val
+
     def get_help(self):
         return self._help
 
@@ -263,6 +264,9 @@ class JConfigTristate(JConfigItem):
     _DEFAULT_HELP = [
         'No Help Message'
     ]
+
+    def to_tristate(self, val):
+        return val
 
     def to_int(self, val):
         if val == "y":
@@ -327,6 +331,9 @@ class JConfigBool(JConfigItem):
     _DEFAULT_HELP = [
         'No Help Message'
     ]
+
+    def to_bool(self, val):
+        return val
 
     def to_string(self, val):
         if val == 'y':
@@ -457,6 +464,9 @@ class JConfigHex(JConfigItem):
             return "n"
         return "y"
 
+    def to_hex(self, val):
+        return val
+
     def __init__(self, name, var_pub, **kwargs):
         self._prompt = ''
         self._help = []
@@ -521,6 +531,9 @@ class JConfigInt(JConfigItem):
     def to_hex(self, val):
         return "{:x}".format(val)
 
+    def to_int(self, val):
+        return val
+
     def __init__(self, name, var_pub, **kwargs):
         self._prompt = ''
         self._help = []
@@ -560,9 +573,8 @@ class JConfigRecipe:
         if var in self._unresolved_path:
             self._unresolved_path.update({var: update_val})
 
-    def __str__(self):
-        self._path = self._var_pub.resolve_path(self._path)
-        return 'include {}'.format(self._path)
+    def get_resolved_path(self):
+        return self._var_pub.resolve_path(self._path)
 
     def __del__(self):
         if len(self._unresolved_path) > 0:
@@ -613,25 +625,25 @@ class JConfig:
     def get_items(self):
         return self._items
 
-    def write_recipe(self, fp):
+    def write_recipe(self, fp, fmt="include {0}\n"):
         if not isinstance(fp, file):
             return
         for recipe in self._recipes:
-            fp.write('{}\n'.format(recipe))
+            fp.write(fmt.format(recipe.get_resolved_path()))
         for child in self._child:
-            child.write_recipe(fp)
+            child.write_recipe(fp, fmt)
 
-    def write_genlist(self, fp):
+    def write_genlist(self, fp, fmt="#define {0} {1}\n"):
         if not isinstance(fp, file):
             return
         for item in self._items:
-            gen = item.get_genlist()
+            gen = item.get_resolved_genlist()
             if len(gen) > 0:
                 for gi in gen:
-                    fp.write('#define {0} \t {1}\n'.format(gi,gen[gi]))
+                    fp.write(fmt.format(gi, gen[gi]))
 
         for child in self._child:
-            child.write_genlist(fp)
+            child.write_genlist(fp, fmt)
 
     def is_visible(self):
         return self._visibility
@@ -984,6 +996,9 @@ def init_text_mode_config(argv):
     with open(result_file, 'w+') as ofp:
         monitor.write(ofp)
         root_config.write_recipe(ofp)
+        ofp.write('\nDEF+=')
+        root_config.write_genlist(ofp, ' {0}={1}')
+        ofp.write('\n')
 
     with open(autogen_header, 'w+') as agen:
         root_config.write_genlist(agen)
