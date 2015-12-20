@@ -70,7 +70,7 @@
   "STATIC_LINKED_USER":
   {
     "type":"bool",
-    "default":"y",
+    "default":"n",
     "prompt":"make user level feature statically linked"
   },
   "USER_CONFIG":

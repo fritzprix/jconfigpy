@@ -43,7 +43,7 @@ class ConfigVariableMonitor:
     def check_depend(self, **kwargs):
         for key, val in kwargs.iteritems():
             cval = self._var_map.get(key, None)
-            if cval is None or cval is not val:
+            if cval is None or cval != val:
                 return False
         return True
 
@@ -606,10 +606,12 @@ class JConfigRecipe:
 class JConfig:
 
     def on_update_var(self, var, updated_val):
+        print('Updated in {0} {1}'.format(self._name, var))
         if var in self._var_map:
             self._var_map.update({var: updated_val})
         if var in self._depend:
             self._visibility = self._var_pub.check_depend(**self._depend)
+            print('visibility updated {0} {1}\n'.format(self._visibility, self._depend))
         if var in self._unresolved_path:
             self._unresolved_path.update({var: updated_val})
 
@@ -1001,7 +1003,12 @@ def init_text_mode_config(argv):
         ofp.write('\n')
 
     with open(autogen_header, 'w+') as agen:
+        agen.write('#ifndef ___AUTO_GEN_H\n')
+        agen.write('#define ___AUTO_GEN_H\n')
+
         root_config.write_genlist(agen)
+
+        agen.write('#endif\n')
 
 
 def load_saved_config(argv):

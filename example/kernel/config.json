@@ -9,6 +9,10 @@
     "type" : "config",
     "path" : "./module/config.json"
   },
+  "MM_CONFIG":{
+    "type":"config",
+    "path":"./mm/config.json"
+  },
   "PAGE_SHIFT_SIZE":{
     "type" : "int",
     "range": [1, 16],
