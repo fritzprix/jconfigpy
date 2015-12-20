@@ -8,6 +8,7 @@
 
 ## Getting Started
 > you can see how it works by input following in command line
+
 <script src="https://gist.github.com/fritzprix/2419b4e700cad3ea7553.js"></script>
 
 1. there are many C (or C++) projects that still use preprocessor macro (header file) as its configuration tools.  this method makes project less scalable. change to the project is painful because headers for configuration are added in directory whenever extension is added.
