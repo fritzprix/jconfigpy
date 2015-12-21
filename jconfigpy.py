@@ -774,10 +774,16 @@ def print_help(item):
         print(hdlin)
 
 
-def prompt_enum(item):
+def prompt_enum(item, predef={}):
     if not isinstance(item, JConfigEnum):
         return
     if not item.is_visible():
+        return
+    name = item.get_name()
+    if name in predef:
+        estr = predef[name]
+        idx = item._enum.index(estr)
+        item.set_user_value(idx)
         return
     print('\nCONFIG_{0}'.format(item.get_name()))
     elements = item.get_elements()
@@ -801,10 +807,14 @@ def prompt_enum(item):
     print('selected item is {}\n'.format(item.get_user_value()))
 
 
-def prompt_bool(item):
+def prompt_bool(item, predef={}):
     if not isinstance(item, JConfigBool):
         return
     if not item.is_visible():
+        return
+    name = item.get_name()
+    if name in predef:
+        item.set_user_value(predef[name])
         return
     print('\nCONFIG_{0}'.format(item.get_name()))
     val = 'h'
@@ -826,10 +836,14 @@ def prompt_bool(item):
     print('{0} is set to {1}'.format('CONFIG_' + item.get_name(), val))
 
 
-def prompt_tristate(item):
+def prompt_tristate(item, predef={}):
     if not isinstance(item, JConfigTristate):
         return
     if not item.is_visible():
+        return
+    name = item.get_name()
+    if name in predef:
+        item.set_user_value(predef[name])
         return
     print('\nCONFIG_{0}'.format(item.get_name()))
     val = 'h'
@@ -854,10 +868,14 @@ def prompt_tristate(item):
     print('{0} is set to {1}'.format('CONFIG_' + item.get_name(), val))
 
 
-def prompt_string(item):
+def prompt_string(item, predef={}):
     if not isinstance(item, JConfigString):
         return
     if not item.is_visible():
+        return
+    name = item.get_name()
+    if name in predef:
+        item.set_user_value(predef[name])
         return
     print('\nCONFIG_{0}'.format(item.get_name()))
     val = 'h'
@@ -882,10 +900,14 @@ def prompt_string(item):
     print('{0} is set to {1}'.format('COFNIG_{}'.format(item.get_name()), item.get_user_value()))
 
 
-def prompt_int(item):
+def prompt_int(item, predef={}):
     if not isinstance(item, JConfigInt):
         return
     if not item.is_visible():
+        return
+    name = item.get_name()
+    if name in predef:
+        item.set_user_value(predef[name])
         return
     print('\nCONFIG_{0}'.format(item.get_name()))
     val = 'h'
@@ -911,10 +933,14 @@ def prompt_int(item):
     print('entered value is {}\n'.format(item.get_user_value()))
 
 
-def prompt_hex(item):
+def prompt_hex(item, predef={}):
     if not isinstance(item, JConfigHex):
         return
     if not item.is_visible():
+        return
+    name = item.get_name()
+    if name in predef:
+        item.set_user_value(predef[name])
         return
     print('\nCONFIG_{0}'.format(item.get_name()))
     val = 'h'
@@ -939,7 +965,7 @@ def prompt_hex(item):
     print('entered value is {}\n'.format(item.get_user_value()))
 
 
-def prompt_config(config):
+def prompt_config(config, predef={}):
     if not isinstance(config, JConfig):
         return
     if not config.is_visible():
@@ -949,20 +975,20 @@ def prompt_config(config):
         if item.is_visible():
             item_type = item.get_type()
             if item_type is 'enum':
-                prompt_enum(item)
+                prompt_enum(item, predef)
             elif item_type is 'int':
-                prompt_int(item)
+                prompt_int(item, predef)
             elif item_type is 'hex':
-                prompt_hex(item)
+                prompt_hex(item, predef)
             elif item_type is 'bool':
-                prompt_bool(item)
+                prompt_bool(item, predef)
             elif item_type is 'tristate':
-                prompt_tristate(item)
+                prompt_tristate(item, predef)
             elif item_type is 'string':
-                prompt_string(item)
+                prompt_string(item, predef)
 
     for child in config.get_childs():
-        prompt_config(child)
+        prompt_config(child, predef)
 
 
 def init_text_mode_config(argv):
@@ -1014,13 +1040,44 @@ def init_text_mode_config(argv):
 def load_saved_config(argv):
     if '-i' not in argv:
         return
+    config_file = './config.json'
+    sconfig_file = None
+    for idx, arg in enumerate(argv):
+        if '-i' in arg:
+            if len(argv) <= idx + 1:
+                return
+            sconfig_file = argv[idx + 1]
+        if '-t' in arg:
+            if len(argv) <= idx + 1:
+                return
+            config_file = argv[idx + 1]
+
+    if sconfig_file is None:
+        return
+
+    kv_map = {}
+    with open(sconfig_file, 'r') as fp:
+        for flin in fp:
+            if 'CONFIG_' in flin:
+                lin = flin.split('CONFIG_')[1]
+                kv = lin.split('=')
+                kv_map.update({kv[0]: kv[1]})
+    print(kv_map)
+    klist = []
+    vlist = []
+    for key in kv_map:
+        klist.append(key)
+        vlist.append(kv_map[key].split('\n')[0])
+    kv_map = dict(zip(klist,vlist))
+    root_config = JConfig('root', config_file)
+    prompt_config(root_config, kv_map)
 
 
 def main(argv=None):
     if argv is not None:
         for idx, arg in enumerate(argv):
             if '-h' in arg or '--help' in arg:
-                print(JCONFIG_HELP_STRING.format(maj=0, minor=0, author='doowoong'))
+                print(JCONFIG_HELP_STRING.format(maj=0, minor=1, author='doowoong'))
                 return
             elif '-c' in arg:
                 if '-u' not in argv:

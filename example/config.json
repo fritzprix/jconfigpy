@@ -29,7 +29,6 @@
   {
     "type": "string",
     "default":"noname"
-
   },
   "TEST_BOOL":{
     "type":"bool"
