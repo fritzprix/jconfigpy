@@ -1056,7 +1056,7 @@ def load_saved_config(argv):
         if '-o' in arg:
             if len(argv) <= idx + 1:
                 return
-            target_file = argv[idx + 1]
+            result_file = argv[idx + 1]
         if '-g' in arg:
             if len(argv) <= idx + 1:
                 return
@@ -1081,7 +1081,6 @@ def load_saved_config(argv):
     kv_map = dict(zip(klist, vlist))
     root_config = JConfig('root', config_file)
     prompt_config(root_config, kv_map)
-
 
     try:
         monitor = ConfigVariableMonitor()
