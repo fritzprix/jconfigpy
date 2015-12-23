@@ -1042,6 +1042,8 @@ def load_saved_config(argv):
         return
     config_file = './config.json'
     sconfig_file = None
+    result_file = None
+    gen_file = None
     for idx, arg in enumerate(argv):
         if '-i' in arg:
             if len(argv) <= idx + 1:
@@ -1051,8 +1053,16 @@ def load_saved_config(argv):
             if len(argv) <= idx + 1:
                 return
             config_file = argv[idx + 1]
+        if '-o' in arg:
+            if len(argv) <= idx + 1:
+                return
+            target_file = argv[idx + 1]
+        if '-g' in arg:
+            if len(argv) <= idx + 1:
+                return
+            gen_file = argv[idx + 1]
 
-    if sconfig_file is None:
+    if result_file is None:
         return
 
     kv_map = {}
@@ -1068,9 +1078,30 @@ def load_saved_config(argv):
     for key in kv_map:
         klist.append(key)
         vlist.append(kv_map[key].split('\n')[0])
-    kv_map = dict(zip(klist,vlist))
+    kv_map = dict(zip(klist, vlist))
     root_config = JConfig('root', config_file)
     prompt_config(root_config, kv_map)
+
+
+    try:
+        monitor = ConfigVariableMonitor()
+    except ConfigVariableMonitor as singleinstance:
+        monitor = singleinstance
+
+    with open(result_file, 'w+') as ofp:
+        monitor.write(ofp)
+        root_config.write_recipe(ofp)
+        ofp.write('\nDEF+=')
+        root_config.write_genlist(ofp, ' {0}={1}')
+        ofp.write('\n')
+
+    with open(gen_file, 'w+') as agen:
+        agen.write('#ifndef ___AUTO_GEN_H\n')
+        agen.write('#define ___AUTO_GEN_H\n')
+
+        root_config.write_genlist(agen)
+
+        agen.write('#endif\n')
 
 
 def main(argv=None):
