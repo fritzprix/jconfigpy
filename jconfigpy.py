@@ -61,13 +61,16 @@ class ConfigVariableMonitor:
         self._sub_map[var].remove(config_item)
 
     def resolve_path(self, pth):
-        npth = str(pth)
-        for p in pth.split('/'):
-            if '$' in p:
-                key = p.split('$')[-1]
+        if '$' not in pth:
+            return pth
+        head, tail = path.split(pth)
+        while tail != '':
+            if '$' in tail:
+                key = tail.split('$')[-1]
                 if key in self._var_map:
-                    npth = npth.replace(p, self._var_map[key])
-        return npth
+                    pth = pth.replace(tail, self._var_map[key])
+            head, tail = path.split(head)
+        return pth
 
     def get_update(self, var_map):
         if not isinstance(var_map, dict):
@@ -593,25 +596,26 @@ class JConfigRecipe:
             raise TypeError('var_pub is not instance of {}'.format(str(ConfigVariableMonitor)))
         self._path = path.abspath(path.join(self._base_dir, kwargs.get('path', './Makefile')))
 
-        for p in self._path.split('/'):
-            if '$' in p:
-                urpath = p.split('$')[1]
-                if urpath in self._var_map:
-                    self._unresolved_path.update({urpath: self._var_map[urpath]})
-                else:
-                    self._unresolved_path.update({urpath: ''})
-                self._var_pub.subscribe_variable_change(urpath, self)
+        if '$' in self._path:
+            head, tail = path.split(self._path)
+            while tail != '':
+                if '$' in tail:
+                    urpath = tail.split('$')[1]
+                    if urpath in self._var_map:
+                        self._unresolved_path.update({urpath: self._var_map[urpath]})
+                    else:
+                        self._unresolved_path.update({urpath: ''})
+                    self._var_pub.subscribe_variable_change(urpath, self)
+                head, tail = path.split(head)
 
 
 class JConfig:
 
     def on_update_var(self, var, updated_val):
-        print('Updated in {0} {1}'.format(self._name, var))
         if var in self._var_map:
             self._var_map.update({var: updated_val})
         if var in self._depend:
             self._visibility = self._var_pub.check_depend(**self._depend)
-            print('visibility updated {0} {1}\n'.format(self._visibility, self._depend))
         if var in self._unresolved_path:
             self._unresolved_path.update({var: updated_val})
 
@@ -619,7 +623,7 @@ class JConfig:
         if not path.exists(config_file):
             raise FileNotExistError(_FILE_ERROR_FORMAT.format(config_file))
         self._jconfig_file = config_file
-        self._base_dir = '/'.join(config_file.split('/')[:-1])    # extract base directory in which root config file is
+        self._base_dir = path.split(config_file)[0]
 
     def get_childs(self):
         return self._child
@@ -658,7 +662,6 @@ class JConfig:
             for idx, pv in enumerate(self._unresolved_path):
                 path_var = '$' + pv
                 self._jconfig_file = self._jconfig_file.replace(path_var, self._unresolved_path[pv])
-
         if not path.exists(self._jconfig_file):
             raise FileNotExistError(_FILE_ERROR_FORMAT.format(self._jconfig_file))
         with open(self._jconfig_file, 'r') as fp:
@@ -679,7 +682,7 @@ class JConfig:
                     self._items.append(JConfigTristate(key, self._var_pub, **config_json[key]))
                 elif 'config' in config_type:
                     config_path = config_json[key]['path']
-                    config_path = self._base_dir + '.'.join(config_path.split('.')[1:])
+                    config_path = path.abspath(path.join(self._base_dir, config_path))
                     self._child.append(JConfig(name=key, jconfig_file=config_path, **config_json[key]))
                 elif 'recipe' in config_type:
                     self._recipes.append(JConfigRecipe(key, self._var_pub, self._base_dir, self._var_map,
@@ -698,7 +701,6 @@ class JConfig:
         self._parent = parent
         self._var_map = var_map
         self._unresolved_path = {}
-        self._base_dir = './'
         self._items = []
         self._child = []
         self._recipes = []
@@ -709,17 +711,18 @@ class JConfig:
         except ConfigVariableMonitor as var_pub:
             self._var_pub = var_pub
 
-        self._jconfig_file = jconfig_file
         self._depend = kwargs.get('depend', {})
         self._name = name
         self._var_pub.get_update(self._var_map)
-        self._base_dir = '/'.join(jconfig_file.split('/')[:-1])
+        self._base_dir = path.abspath(path.abspath(path.dirname(jconfig_file)))
+        self._jconfig_file = path.abspath(jconfig_file)
 
         if '$' in self._jconfig_file:
             '''
             unresolved part exists in config file path
             '''
-            for p in self._jconfig_file.split('/'):
+            config_path, p = path.split(self._jconfig_file)
+            while p != '':
                 if '$' in p:
                     path_var = p.split('$')[1]
                     if path_var in self._var_map:
@@ -727,6 +730,8 @@ class JConfig:
                     else:
                         self._unresolved_path.update({path_var: ''})
                     self._var_pub.subscribe_variable_change(path_var, self)
+                config_path, p = path.split(config_path)
+
         if len(self._depend) > 0:
             self._visibility = self._var_pub.check_depend(**self._depend)
             for key in self._depend:
@@ -1013,6 +1018,7 @@ def init_text_mode_config(argv):
 
     if not path.exists(file_name):
         raise FileNotExistError('File {} does not exist.'.format(file_name))
+
     root_config = JConfig(jconfig_file=file_name)
     prompt_config(root_config)
 
