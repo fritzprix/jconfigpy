@@ -3,6 +3,8 @@ import json
 import re
 from os import path
 from os import environ
+import os
+import random
 
 
 class FileNotExistError(BaseException):
@@ -95,6 +97,14 @@ class JConfigItem:
                      'depends on : {deplist}\n' \
                      'is_visible : {visible}\n'
 
+    @staticmethod
+    def rand(max_byte):
+        if not max_byte > 0:
+            raise ValueError('max_byte should be larger than 0')
+        random.seed(os.urandom(64))
+        msk = ((1 << (max_byte * 8)) - 1)
+        return random.randint(msk, msk << 4) & msk
+
     def get_prompt(self):
         raise NotImplementedError(JConfigItem._NIE_MESSAGE.format(JConfigItem.get_prompt))
 
@@ -136,6 +146,7 @@ class JConfigItem:
         to_tristate = self.to_tristate
         to_hex = self.to_hex
         to_string = self.to_string
+        rand = JConfigItem.rand
         this = self.get_user_value()
         for key in self._gen_list:
             genlist.update({key: eval(self._gen_list[key])})
