@@ -806,6 +806,8 @@ def prompt_enum(item, predef={}):
         return
     if not item.is_visible():
         return
+    if item.is_forced():
+        return
     name = item.get_name()
     if name in predef:
         estr = predef[name]
@@ -839,6 +841,8 @@ def prompt_bool(item, predef={}):
         return
     if not item.is_visible():
         return
+    if item.is_forced():
+        return
     name = item.get_name()
     if name in predef:
         item.set_user_value(predef[name])
@@ -867,6 +871,8 @@ def prompt_tristate(item, predef={}):
     if not isinstance(item, JConfigTristate):
         return
     if not item.is_visible():
+        return
+    if item.is_forced():
         return
     name = item.get_name()
     if name in predef:
@@ -900,6 +906,8 @@ def prompt_string(item, predef={}):
         return
     if not item.is_visible():
         return
+    if item.is_forced():
+        return
     name = item.get_name()
     if name in predef:
         item.set_user_value(predef[name])
@@ -931,6 +939,8 @@ def prompt_int(item, predef={}):
     if not isinstance(item, JConfigInt):
         return
     if not item.is_visible():
+        return
+    if item.is_forced():
         return
     name = item.get_name()
     if name in predef:
@@ -964,6 +974,8 @@ def prompt_hex(item, predef={}):
     if not isinstance(item, JConfigHex):
         return
     if not item.is_visible():
+        return
+    if item.is_forced():
         return
     name = item.get_name()
     if name in predef:
