@@ -105,6 +105,9 @@ class JConfigItem:
         msk = ((1 << (max_byte * 8)) - 1)
         return random.randint(msk, msk << 4) & msk
 
+    def is_forced(self):
+        return self._isforced == 'y'
+
     def get_prompt(self):
         raise NotImplementedError(JConfigItem._NIE_MESSAGE.format(JConfigItem.get_prompt))
 
@@ -182,6 +185,9 @@ class JConfigItem:
         self._depend = kwargs.get('depend', {})
         self._type = type_
         self._gen_list = kwargs.get('gen-list', {})
+        self._isforced = kwargs.get('force', 'n')
+        if self.is_forced() and self._def_val == '':
+            raise ValueError(_VALUE_ERROR_FORMAT.format('default', 'not empty'))
 
         if not isinstance(var_pub, ConfigVariableMonitor):
             raise TypeError(_TYPE_ERROR_FORMAT.format('var_pub', ConfigVariableMonitor))
@@ -420,6 +426,9 @@ class JConfigEnum(JConfigItem):
     def to_bool(self, val):
         return "y"
 
+    def get_enum(self):
+        return self._enum
+
     def __init__(self, name, var_pub, **kwargs):
         self._enum = []
         self._prompt = ''
@@ -493,12 +502,12 @@ class JConfigHex(JConfigItem):
         self._prompt = kwargs.get('prompt', JConfigHex._DEFAULT_PROMPT.format(name))
         self._help = kwargs.get('help', JConfigHex._DEFAULT_HELP)
         self._import = kwargs.get('import', False)
-        self._range = kwargs.get('range', [])
-        for i in self._range:
+        _range = kwargs.get('range', [])
+        for i in _range:
             if not self._pattern.match(i):
                 raise ValueError('value in range attribute should be formatted as \'0x[0-9a-fA-F]\'')
 
-        self._range = [int(i, 16) for i in self._range]
+        self._range = [int(i, 16) for i in _range]
 
         if self._import and name in environ:
             self.set_user_value(environ[name])
@@ -509,7 +518,8 @@ class JConfigHex(JConfigItem):
         ival = int(val, 16)
         if len(self._range) > 1:
             if self._range[0] > ival or self._range[1] < ival:
-                raise ValueError('value should be within 0x{min:x}~0x{max:x}'.format(min=self._range[0], max=self._range[1]))
+                raise ValueError('value should be within 0x{min:x}~0x{max:x}'.format(min=self._range[0],
+                                                                                     max=self._range[1]))
         JConfigItem.set_user_value(self, val)
 
     def get_help(self):
@@ -595,11 +605,11 @@ class JConfigRecipe:
             for key in self._unresolved_path:
                 self._var_pub.unsubscribe_variable_change(key)
 
-    def __init__(self, name='recipe', var_pub=None, base_dir='./', var_map={}, **kwargs):
+    def __init__(self, name='recipe', var_pub=None, base_dir='./', var_map=None, **kwargs):
         self._name = name
         self._path = None
         self._var_pub = var_pub
-        self._var_map = var_map
+        self._var_map = dict(iterable=var_map)
         self._base_dir = base_dir
         self._unresolved_path = {}
 
@@ -706,11 +716,11 @@ class JConfig:
         report_str += '<<< Config : {}\n'.format(self._name)
         return report_str
 
-    def __init__(self, name='root', jconfig_file='./config.json', var_map={}, parent=None, **kwargs):
+    def __init__(self, name='root', jconfig_file='./config.json', var_map=None, parent=None, **kwargs):
         self._name = name
         self._jconfig_file = jconfig_file
         self._parent = parent
-        self._var_map = var_map
+        self._var_map = dict(iterable=var_map)
         self._unresolved_path = {}
         self._items = []
         self._child = []
@@ -761,6 +771,7 @@ class JConfig:
 
 
 _TYPE_ERROR_FORMAT = '{0} should be instance of {1}'
+_VALUE_ERROR_FORMAT = '{0} should be {1}'
 _FILE_ERROR_FORMAT = '{0} doesn\'t exists'
 
 TYPE, HELP, IMPORT, DEPEND, DEFAULT, PROMPT, PATH, \
