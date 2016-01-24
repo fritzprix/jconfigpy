@@ -1,4 +1,5 @@
 import sys
+import time
 import json
 import re
 from os import path
@@ -105,6 +106,10 @@ class JConfigItem:
         msk = ((1 << (max_byte * 8)) - 1)
         return random.randint(msk, msk << 4) & msk
 
+    @staticmethod
+    def get_time():
+        return  int(time.time())
+
     def is_forced(self):
         return self._isforced == 'y'
 
@@ -150,6 +155,7 @@ class JConfigItem:
         to_hex = self.to_hex
         to_string = self.to_string
         rand = JConfigItem.rand
+        ctime = JConfigItem.get_time
         this = self.get_user_value()
         for key in self._gen_list:
             genlist.update({key: eval(self._gen_list[key])})
