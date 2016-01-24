@@ -807,6 +807,7 @@ def prompt_enum(item, predef={}):
     if not item.is_visible():
         return
     if item.is_forced():
+        item.set_user_value(item.get_default_value())
         return
     name = item.get_name()
     if name in predef:
@@ -842,6 +843,7 @@ def prompt_bool(item, predef={}):
     if not item.is_visible():
         return
     if item.is_forced():
+        item.set_user_value(item.get_default_value())
         return
     name = item.get_name()
     if name in predef:
@@ -873,6 +875,7 @@ def prompt_tristate(item, predef={}):
     if not item.is_visible():
         return
     if item.is_forced():
+        item.set_user_value(item.get_default_value())
         return
     name = item.get_name()
     if name in predef:
@@ -907,6 +910,7 @@ def prompt_string(item, predef={}):
     if not item.is_visible():
         return
     if item.is_forced():
+        item.set_user_value(item.get_default_value())
         return
     name = item.get_name()
     if name in predef:
@@ -941,6 +945,7 @@ def prompt_int(item, predef={}):
     if not item.is_visible():
         return
     if item.is_forced():
+        item.set_user_value(item.get_default_value())
         return
     name = item.get_name()
     if name in predef:
@@ -976,6 +981,7 @@ def prompt_hex(item, predef={}):
     if not item.is_visible():
         return
     if item.is_forced():
+        item.set_user_value(item.get_default_value())
         return
     name = item.get_name()
     if name in predef:
