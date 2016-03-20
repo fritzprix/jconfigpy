@@ -31,9 +31,11 @@
     "default":"noname"
   },
   "TEST_BOOL":{
+    "default":"y",
     "type":"bool"
   },
   "TEST_INT":{
+    "default":"1",
     "range":[0,2],
     "type":"int"
   },

@@ -1,11 +1,18 @@
 {
   "FS" : {
-    "type" : "tristate",
-    "default" : "n",
-    "prompt" : ""
+    "type" : "repo",
+    "name" : "cdsl",
+    "url" : "https://github.com/fritzprix/cdsl.git",
+    "out" : "./dep/"
   },
-  "FS_CONFIG" : {
-    "type" : "source",
-    "path" : "./fs/config.json"
+  "LIBFLV" : {
+    "type" : "repo",
+    "name" : "libflv",
+    "url" : "https://github.com/fritzprix/libflv.git",
+    "out" :"./dep/"
+  },
+  "MODULE_RECIPE":{
+    "type":"recipe",
+    "path":"./autorecipe.mk"
   }
 }

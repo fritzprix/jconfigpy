@@ -598,6 +598,7 @@ class JConfigInt(JConfigItem):
 class JConfigRecipe:
 
     def on_update_var(self, var, update_val):
+
         if var in self._var_map:
             self._var_map.update({var: update_val})
         if var in self._unresolved_path:
@@ -634,6 +635,96 @@ class JConfigRecipe:
                         self._unresolved_path.update({urpath: ''})
                     self._var_pub.subscribe_variable_change(urpath, self)
                 head, tail = path.split(head)
+
+
+class JConfigRepo:
+
+    def on_update_var(self, var, update_val):
+
+        if var in self._var_map:
+            self._var_map.update({var : update_val})
+        if var in self._unresolved_path:
+            self._unresolved_path.update({var: update_val})
+
+    def get_resolved_path(self):
+        return self._var_pub.resolve_path(self._path)
+
+    @staticmethod
+    def build_repo(**kwargs):
+        make_cmd = kwargs.get('buildcmd')
+        for cmd in make_cmd:
+            os.system(cmd)
+
+    def copy_output(self, out):
+        os.system('cp {0} {1}'.format(path.join(self._path,out),self._out_path))
+
+
+    def resolve_repo(self):
+        print('Url : {0} / Path : {1}'.format(self._url, self._path))
+        if not path.exists(self._path):
+            os.system('git clone {0} {1}'.format(self._url, self._path))
+        os.chdir(self._path)
+        with open('package.json','r') as fp:
+            package_json = json.load(fp,encoding='utf-8')
+            if package_json['name'] != self._name:
+                raise ValueError('Unexpected Package name : {}'.format(package_json['name']))
+            JConfigRepo.build_repo(**package_json)
+            package_headers =  package_json['include']
+            package_inc = ''
+            output_inc = ''
+            output = package_json['output']
+            version = package_json['version']
+        os.chdir('../')
+        for inc in package_headers:
+            package_inc += 'INC-y+={0}\n'.format(path.abspath(path.join(self._path, inc)))
+        if not path.exists(self._out_path):
+            print self._out_path
+            os.mkdir(self._out_path)
+        for out in output:
+            self.copy_output(out)
+            if '.a' in out:
+                output_inc += 'SLIB-y+={0}\n'.format(out)
+            elif '.so' in out:
+                output_inc += 'DLIB-y+={0}\n'.format(out)
+        with open('autorecipe.mk','a+') as fp:
+            fp.write(output_inc)
+            fp.write(package_inc)
+        os.chdir(self._root_dir)
+
+
+    def __del__(self):
+        if len(self._unresolved_path) > 0:
+            for key in self._unresolved_path:
+                self._var_pub.unsubscribe_variable_change(key)
+
+
+    def __init__(self, name='repo', var_pub=None, base_dir='./', root_dir = None , var_map=None, **kwargs):
+        self._name = name
+        self._path = None
+        self._var_pub = var_pub
+        self._base_dir = base_dir
+        self._root_dir = root_dir
+        self._var_map = dict(iterable=var_map)
+        self._unresolved_path = {}
+        self._url = kwargs.get('url')
+        self._out_path = path.abspath(path.join(self._base_dir,kwargs.get('out','./dep/')))
+
+        if not isinstance(var_pub, ConfigVariableMonitor):
+            raise TypeError('var_pub is not instance if {}'.format(str(ConfigVariableMonitor)))
+        self._path = path.abspath(path.join(self._base_dir,self._name))
+
+        if '$' in self._path:
+            head, tail = path.split(self._path)
+            while tail != '':
+                if '$' in tail:
+                    urpath = tail.split('$')[1]
+                    if urpath in self._var_map:
+                        self._unresolved_path.update({urpath: self._var_map[urpath]})
+                    else:
+                        self._unresolved_path.update({urpath: ''})
+                    self._var_pub.subscribe_variable_change(urpath, self)
+                head, tail = path.split(head)
+
 
 
 class JConfig:
@@ -710,10 +801,16 @@ class JConfig:
                 elif 'config' in config_type:
                     config_path = config_json[key]['path']
                     config_path = path.abspath(path.join(self._base_dir, config_path))
-                    self._child.append(JConfig(name=key, jconfig_file=config_path, **config_json[key]))
+                    self._child.append(JConfig(name=key, jconfig_file=config_path, root_dir=self._root, **config_json[key]))
                 elif 'recipe' in config_type:
-                    self._recipes.append(JConfigRecipe(key, self._var_pub, self._base_dir, self._var_map,
-                                                       **config_json[key]))
+                    self._recipes.append(JConfigRecipe(key, self._var_pub, self._base_dir, self._var_map,**config_json[key]))
+                elif 'repo' in config_type:
+                    repositoy = JConfigRepo( var_pub=self._var_pub,base_dir=self._base_dir,root_dir=self._root,var_map=self._var_map,**config_json[key])
+                    repositoy.resolve_repo()
+                    self._repos.append(repositoy)
+
+
+
 
     def __str__(self):
         report_str = str('>>> Config : {}\n'.format(self._name))
@@ -722,8 +819,9 @@ class JConfig:
         report_str += '<<< Config : {}\n'.format(self._name)
         return report_str
 
-    def __init__(self, name='root', jconfig_file='./config.json', var_map=None, parent=None, **kwargs):
+    def __init__(self, name='root', jconfig_file='./config.json', root_dir = None, var_map=None, parent=None, **kwargs):
         self._name = name
+        self._root = root_dir
         self._jconfig_file = jconfig_file
         self._parent = parent
         self._var_map = dict(iterable=var_map)
@@ -731,7 +829,9 @@ class JConfig:
         self._items = []
         self._child = []
         self._recipes = []
+        self._repos = []
         self._visibility = True
+
 
         try:
             self._var_pub = ConfigVariableMonitor()
@@ -743,6 +843,10 @@ class JConfig:
         self._var_pub.get_update(self._var_map)
         self._base_dir = path.abspath(path.abspath(path.dirname(jconfig_file)))
         self._jconfig_file = path.abspath(jconfig_file)
+        autogen_file = path.abspath(path.join(self._base_dir,'./autorecipe.mk'))
+        print autogen_file
+        if path.exists(autogen_file):
+            os.remove(autogen_file)
 
         if '$' in self._jconfig_file:
             '''
@@ -1065,7 +1169,7 @@ def init_text_mode_config(argv):
     if not path.exists(file_name):
         raise FileNotExistError('File {} does not exist.'.format(file_name))
 
-    root_config = JConfig(jconfig_file=file_name)
+    root_config = JConfig(jconfig_file=file_name,root_dir=path.abspath('./'))
     prompt_config(root_config)
 
     try:

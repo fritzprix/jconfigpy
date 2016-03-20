@@ -1,6 +1,0 @@
-
-config SUB_ARCH
-	bool 
-	prompt "Sub Arch"
-	help
-		Sub Architecture
