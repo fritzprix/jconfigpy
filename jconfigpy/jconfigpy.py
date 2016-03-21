@@ -639,6 +639,8 @@ class JConfigRecipe:
 
 class JConfigRepo:
 
+    LIB_DIR=[]
+
     def on_update_var(self, var, update_val):
 
         if var in self._var_map:
@@ -689,6 +691,10 @@ class JConfigRepo:
         with open('autorecipe.mk','a+') as fp:
             fp.write(output_inc)
             fp.write(package_inc)
+            fp.write('REPO-y+={0}\n'.format(self._path))
+            if self._out_path not in JConfigRepo.LIB_DIR:
+                JConfigRepo.LIB_DIR.append(self._out_path)
+                fp.write('LDIR-y+={0}\n'.format(self._out_path))
         os.chdir(self._root_dir)
 
 
