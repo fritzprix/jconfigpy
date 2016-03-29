@@ -5,12 +5,6 @@
     "url" : "https://github.com/fritzprix/cdsl.git",
     "out" : "./dep/"
   },
-  "LIBFLV" : {
-    "type" : "repo",
-    "name" : "libflv",
-    "url" : "https://github.com/fritzprix/libflv.git",
-    "out" :"./dep/"
-  },
   "MODULE_RECIPE":{
     "type":"recipe",
     "path":"./autorecipe.mk"

@@ -812,6 +812,8 @@ class JConfig:
                     self._recipes.append(JConfigRecipe(key, self._var_pub, self._base_dir, self._var_map,**config_json[key]))
                 elif 'repo' in config_type:
                     repositoy = JConfigRepo( var_pub=self._var_pub,base_dir=self._base_dir,root_dir=self._root,var_map=self._var_map,**config_json[key])
+                    print self._base_dir
+                    print self._root
                     repositoy.resolve_repo()
                     self._repos.append(repositoy)
 
@@ -898,16 +900,26 @@ KW_REVMAP = {'type': TYPE, 'help': HELP, 'depend': DEPEND, 'default': DEFAULT,
              'prompt': PROMPT, 'path': PATH, 'bool': BOOL, 'tristate': TRISTATE,
              'string': STRING, 'config': CONFIG, 'int': INT, 'hex': HEX}
 
-JCONFIG_HELP_STRING = '----------------------------------------------------\n' \
-                      '*              jconfigpy {maj}.{minor}                       *\n' \
-                      '*              {author}                            *\n' \
-                      '----------------------------------------------------\n' \
+JCONFIG_HELP_STRING = '---------------------------------------------------------\n' \
+                      '*\t\tjconfigpy {maj}.{minor}\t\t\t\t*\n' \
+                      '*\t{author}({email})\t\t*\n' \
+                      '---------------------------------------------------------\n' \
                       '\n\n' \
                       '-c : -c initiate configuration\n' \
                       '-i [file] : define input file explicitly\n' \
+                      '-o [file] : output configuration file\n' \
                       '-u [t/g]  : set ui type for configuration (default text mode)\n' \
                       '-s [file] : load configuration from file\n' \
-                      '-g [file] : specify name of header file for preprocessor macro'
+                      '-g [file] : specify name of header file for preprocessor macro\n' \
+                      '-t [file] : specify template config file\n' \
+                      '\n' \
+                      '\n' \
+                      'initiate configuration in command line\n' \
+                      'ex) python jconfigpy.py -c -ut -i config.json -o .config\n' \
+                      '\n' \
+                      'initiate configuration from pre defined(stored) configuration\n' \
+                      'ex) python jconfigpy.py -s -i .config -t config.json -o .new_config\n' \
+                      '\n' \
 
 
 def print_help(item):
@@ -1204,27 +1216,39 @@ def load_saved_config(argv):
         return
     config_file = './config.json'
     sconfig_file = None
-    result_file = None
-    gen_file = None
+    result_file = './.config'
+    gen_file = './autogen.h'
     for idx, arg in enumerate(argv):
         if '-i' in arg:
+            '''
+            input configuration file (saved .config)
+            '''
             if len(argv) <= idx + 1:
                 return
             sconfig_file = argv[idx + 1]
         if '-t' in arg:
+            '''
+            config template file (root config.json)
+            '''
             if len(argv) <= idx + 1:
                 return
             config_file = argv[idx + 1]
         if '-o' in arg:
+            '''
+            output configuratoin file (target .config)
+            '''
             if len(argv) <= idx + 1:
                 return
             result_file = argv[idx + 1]
         if '-g' in arg:
+            '''
+            auto-generated file
+            '''
             if len(argv) <= idx + 1:
                 return
             gen_file = argv[idx + 1]
 
-    if result_file is None:
+    if sconfig_file is None:
         return
 
     kv_map = {}
@@ -1241,7 +1265,7 @@ def load_saved_config(argv):
         klist.append(key)
         vlist.append(kv_map[key].split('\n')[0])
     kv_map = dict(zip(klist, vlist))
-    root_config = JConfig('root', config_file)
+    root_config = JConfig(jconfig_file=config_file,root_dir=path.abspath('./'))
     prompt_config(root_config, kv_map)
 
     try:
@@ -1269,7 +1293,7 @@ def main(argv=None):
     if argv is not None:
         for idx, arg in enumerate(argv):
             if '-h' in arg or '--help' in arg:
-                print(JCONFIG_HELP_STRING.format(maj=0, minor=1, author='doowoong'))
+                print(JCONFIG_HELP_STRING.format(maj=0, minor=4, author='doowoong',email='innocentevil0914@gmail.com'))
                 return
             elif '-c' in arg:
                 if '-u' not in argv:
