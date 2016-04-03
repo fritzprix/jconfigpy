@@ -5,10 +5,6 @@
     "default" : "n",
     "help" : []
   },
-  "MODULE_CONFIG" : {
-    "type" : "config",
-    "path" : "./module/config.json"
-  },
   "MM_CONFIG":{
     "type":"config",
     "path":"./mm/config.json"

@@ -616,7 +616,7 @@ class JConfigRecipe:
         self._name = name
         self._path = None
         self._var_pub = var_pub
-        self._var_map = dict(iterable=var_map)
+        self._var_map = dict(var_map)
         self._base_dir = base_dir
         self._unresolved_path = {}
 
@@ -662,6 +662,13 @@ class JConfigRepo:
 
 
     def resolve_repo(self):
+        if len(self._unresolved_path) > 0:
+            for idx, pv in enumerate(self._unresolved_path):
+                path_var = '$' + pv
+                self._path = self._path.replace(path_var, self._unresolved_path[pv])
+                self._out_path = self._out_path.replace(path_var, self._unresolved_path[pv])
+
+
         print('Url : {0} / Path : {1}'.format(self._url, self._path))
         if not path.exists(self._path):
             os.system('git clone {0} {1}'.format(self._url, self._path))
@@ -713,7 +720,7 @@ class JConfigRepo:
         self._var_pub = var_pub
         self._base_dir = base_dir
         self._root_dir = root_dir
-        self._var_map = dict(iterable=var_map)
+        self._var_map = dict(var_map)
         self._unresolved_path = {}
         self._url = kwargs.get('url')
         self._out_path = path.abspath(path.join(self._base_dir,kwargs.get('out','./dep/')))
@@ -721,6 +728,8 @@ class JConfigRepo:
         if not isinstance(var_pub, ConfigVariableMonitor):
             raise TypeError('var_pub is not instance if {}'.format(str(ConfigVariableMonitor)))
         self._path = path.abspath(path.join(self._base_dir,self._name))
+
+        print 'varmap {}'.format(self._var_map)
 
         if '$' in self._path:
             head, tail = path.split(self._path)
@@ -733,6 +742,9 @@ class JConfigRepo:
                         self._unresolved_path.update({urpath: ''})
                     self._var_pub.subscribe_variable_change(urpath, self)
                 head, tail = path.split(head)
+
+        print 'repo : {}'.format(self._unresolved_path)
+
 
 
 

@@ -9,5 +9,9 @@
   "SUB_ARCH_CONFIG" : {
     "type" : "config",
     "path" : "./$SUB_ARCH/config.json"
+  },
+  "DEP_MODUE": {
+    "type":"config",
+    "path":"./module/config.json"
   }
 }
