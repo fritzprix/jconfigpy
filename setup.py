@@ -10,14 +10,14 @@ def read(fname):
 
 setup(
     name = "jconfigpy",
-    version = "0.0.5",
+    version = "0.0.6",
     author = "fritzprix",
     author_email = "innocentevil0914@gmail.com",
     description = ("configuration utility which easily integrated into project using gnu make as build system"),
     license = "BSD",
     keywords = "configuration utility make",
     url = "http://github.com/fritzprix/jconfigpy",
-    download_url = "http://github.com/fritzprix/jconfigpy/archive/0.0.5.tar.gz",
+    download_url = "http://github.com/fritzprix/jconfigpy/archive/0.0.6.tar.gz",
     packages=['jconfigpy'],
     long_description=read('README.md'),
     classifiers=[
