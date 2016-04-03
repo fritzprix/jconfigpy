@@ -2,6 +2,7 @@
   "FS" : {
     "type" : "repo",
     "name" : "cdsl",
+    "pkg":"package_x86_64.json",
     "url" : "https://github.com/fritzprix/cdsl.git",
     "out" : "./dep/"
   },

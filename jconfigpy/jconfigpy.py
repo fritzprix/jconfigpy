@@ -248,13 +248,13 @@ class JConfigString(JConfigItem):
 
     def to_int(self, val):
         if self.is_visible():
-            return 1
+            return int(val,0)
         else:
             return 0
 
     def to_hex(self, val):
         if self.is_visible():
-            return "0x01"
+            return "{:x}".format(int(val,16))
         else:
             return "0x00"
 
@@ -666,7 +666,9 @@ class JConfigRepo:
         if not path.exists(self._path):
             os.system('git clone {0} {1}'.format(self._url, self._path))
         os.chdir(self._path)
-        with open('package.json','r') as fp:
+        if not path.exists(self._pkg):
+            raise FileNotExistError('File {} doesn\'t exists'.format(self._pkg))
+        with open(self._pkg ,'r') as fp:
             package_json = json.load(fp,encoding='utf-8')
             if package_json['name'] != self._name:
                 raise ValueError('Unexpected Package name : {}'.format(package_json['name']))
@@ -707,6 +709,7 @@ class JConfigRepo:
     def __init__(self, name='repo', var_pub=None, base_dir='./', root_dir = None , var_map=None, **kwargs):
         self._name = name
         self._path = None
+        self._pkg = kwargs.get('pkg','package.json')
         self._var_pub = var_pub
         self._base_dir = base_dir
         self._root_dir = root_dir

@@ -39,6 +39,14 @@
     "range":[0,2],
     "type":"int"
   },
+  "TEST_STRING": {
+    "type":"string",
+    "default":"0x20000",
+    "gen-list":{
+      "TEST_STRHEX":"to_hex(this)"
+    }
+
+  },
   "PAGE_SIZE":{
     "type":"int",
     "default":1024,
