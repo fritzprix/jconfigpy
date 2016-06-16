@@ -2,7 +2,7 @@
 language: python
 
 install:
-    - cd ./jconfigpy/jconfigpy
+    - cd .fritzprix/jconfigpy/jconfigpy
 
 script:
     - python -s -i ../configs/config -t ../example/config.json
