@@ -1,14 +1,12 @@
-sudo: required
 
 language: python
 
-services: 
-    - docker
-    
 install:
-    - docker build -t jconfig_build .
+    - git clone https://github.com/fritzprix/jconfigpy.git
+    - cd ./jconfigpy/jconfigpy
 
 script:
-    - docker run jconfig_build
+    - python -s -i ../configs/config -t ../example/config.json
+
 
     

@@ -1,6 +1,6 @@
 # jconfigpy  
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/76685c589399464cafbec7e1df23f708)](https://www.codacy.com/app/innocentevil0914/jconfigpy?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=fritzprix/jconfigpy&amp;utm_campaign=Badge_Grade)[![Build Status](https://travis-ci.org/fritzprix/jconfigpy.svg?branch=master)](https://travis-ci.org/fritzprix/jconfigpy)   
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/76685c589399464cafbec7e1df23f708)](https://www.codacy.com/app/innocentevil0914/jconfigpy?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=fritzprix/jconfigpy&amp;utm_campaign=Badge_Grade) [![Build Status](https://travis-ci.org/fritzprix/jconfigpy.svg?branch=master)](https://travis-ci.org/fritzprix/jconfigpy)   
 configuration utility compatible to GNU Make
 
 ## About
