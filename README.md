@@ -5,7 +5,8 @@
 configuration utility compatible to GNU Make
 ```
 
-## About
+
+## Motivation
 ```
 many C / C++ projects configured heavily based on macro variables and they make project readability worse.
 If project scale is getting larger, macro variables are added much more and macro branch points also become too
@@ -13,7 +14,8 @@ complicated to manage project properly. and I really didn't like this kind of me
 inspired from kconfig used in linux kernel build system.
 ```
 
-## Motivation
+
+## About
 ```
 jconfigpy is an implementation effort of a few points that are considered to be able to resolve many issues mentioned preceeding section.
 
