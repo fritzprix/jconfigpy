@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import sys
 import time
 import json
@@ -689,7 +690,6 @@ class JConfigRepo:
         for inc in package_headers:
             package_inc += 'INC-y+={0}\n'.format(path.abspath(path.join(self._path, inc)))
         if not path.exists(self._out_path):
-            print self._out_path
             os.mkdir(self._out_path)
         for out in output:
             self.copy_output(out)
@@ -729,8 +729,6 @@ class JConfigRepo:
             raise TypeError('var_pub is not instance if {}'.format(str(ConfigVariableMonitor)))
         self._path = path.abspath(path.join(self._base_dir,self._name))
 
-        print 'varmap {}'.format(self._var_map)
-
         if '$' in self._path:
             head, tail = path.split(self._path)
             while tail != '':
@@ -742,9 +740,6 @@ class JConfigRepo:
                         self._unresolved_path.update({urpath: ''})
                     self._var_pub.subscribe_variable_change(urpath, self)
                 head, tail = path.split(head)
-
-        print 'repo : {}'.format(self._unresolved_path)
-
 
 
 

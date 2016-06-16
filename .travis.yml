@@ -1,0 +1,14 @@
+sudo: required
+
+language: python
+
+services: 
+    - docker
+    
+install:
+    - docker build -t jconfig_build .
+
+script:
+    - docker run jconfig_build
+
+    
