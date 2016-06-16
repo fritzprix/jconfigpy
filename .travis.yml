@@ -2,7 +2,6 @@
 language: python
 
 install:
-    - git clone https://github.com/fritzprix/jconfigpy.git
     - cd ./jconfigpy/jconfigpy
 
 script:
