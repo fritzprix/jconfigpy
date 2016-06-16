@@ -5,7 +5,7 @@ install:
     - cd jconfigpy
 
 script:
-    - python -s -i ../configs/config -t ../example/config.json
+    - python jconfigpy.py -s -i ../configs/config -t ../example/config.json
 
 
     
