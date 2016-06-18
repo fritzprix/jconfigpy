@@ -674,7 +674,7 @@ class JConfigRepo:
         if not path.exists(self._path):
             os.system('git clone {0} {1}'.format(self._url, self._path))
         if not path.exists(self._path):
-            raise FileNotExistError('Git operation fail'.format(self._url))
+            raise FileNotExistError('Git operation fail {}'.format(self._url))
         os.chdir(self._path)
         if path.abspath(os.curdir) != self._path:
             raise OSError('chdir doesn\'t work curdir : {}'.format(path.abspath(os.curdir)))
