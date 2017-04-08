@@ -15,7 +15,7 @@ class Dialog:
         pass
 
     @staticmethod
-    def prompt_config(config, pre_def = {}):
+    def prompt_config(config, pre_def):
         pass
 
 
@@ -25,7 +25,7 @@ class CMDDialog(Dialog):
         Dialog.__init__(self)
 
     @staticmethod
-    def prompt_config(config, pre_def={}):
+    def prompt_config(config, pre_def):
         assert isinstance(config, JConfig)
         if not config.is_visible():
             return
@@ -58,7 +58,7 @@ class CMDDialog(Dialog):
             print(hdlin)
 
     @staticmethod
-    def prompt_enum(item, predef={}):
+    def prompt_enum(item, predef):
         if not isinstance(item, JConfigEnum):
             return
         if not item.is_visible():
@@ -67,9 +67,9 @@ class CMDDialog(Dialog):
             item.set_user_value(item.get_default_value())
             return
         name = item.get_name()
-        if name in predef:
+        if (predef is not None) and (name in predef):
             estr = predef[name]
-            idx = item._enum.index(estr)
+            idx = item.get_enum().index(estr)
             item.set_user_value(idx)
             return
         print('\nCONFIG_{0}'.format(item.get_name()))
@@ -94,7 +94,7 @@ class CMDDialog(Dialog):
         print('selected item is {}\n'.format(item.get_user_value()))
 
     @staticmethod
-    def prompt_bool(item, predef={}):
+    def prompt_bool(item, predef):
         if not isinstance(item, JConfigBool):
             return
         if not item.is_visible():
@@ -103,7 +103,7 @@ class CMDDialog(Dialog):
             item.set_user_value(item.get_default_value())
             return
         name = item.get_name()
-        if name in predef:
+        if (predef is not None) and (name in predef):
             item.set_user_value(predef[name])
             return
         print('\nCONFIG_{0}'.format(item.get_name()))
@@ -126,7 +126,7 @@ class CMDDialog(Dialog):
         print('{0} is set to {1}'.format('CONFIG_' + item.get_name(), val))
 
     @staticmethod
-    def prompt_tristate(item, predef={}):
+    def prompt_tristate(item, predef):
         if not isinstance(item, JConfigTristate):
             return
         if not item.is_visible():
@@ -135,7 +135,7 @@ class CMDDialog(Dialog):
             item.set_user_value(item.get_default_value())
             return
         name = item.get_name()
-        if name in predef:
+        if (predef is not None) and (name in predef):
             item.set_user_value(predef[name])
             return
         print('\nCONFIG_{0}'.format(item.get_name()))
@@ -161,7 +161,7 @@ class CMDDialog(Dialog):
         print('{0} is set to {1}'.format('CONFIG_' + item.get_name(), val))
 
     @staticmethod
-    def prompt_string(item, predef={}):
+    def prompt_string(item, predef):
         if not isinstance(item, JConfigString):
             return
         if not item.is_visible():
@@ -170,7 +170,7 @@ class CMDDialog(Dialog):
             item.set_user_value(item.get_default_value())
             return
         name = item.get_name()
-        if name in predef:
+        if (predef is not None) and (name in predef):
             item.set_user_value(predef[name])
             return
         print('\nCONFIG_{0}'.format(item.get_name()))
@@ -196,7 +196,7 @@ class CMDDialog(Dialog):
         print('{0} is set to {1}'.format('COFNIG_{}'.format(item.get_name()), item.get_user_value()))
 
     @staticmethod
-    def prompt_int(item, predef={}):
+    def prompt_int(item, predef):
         if not isinstance(item, JConfigInt):
             return
         if not item.is_visible():
@@ -205,7 +205,7 @@ class CMDDialog(Dialog):
             item.set_user_value(item.get_default_value())
             return
         name = item.get_name()
-        if name in predef:
+        if (predef is not None) and (name in predef):
             item.set_user_value(predef[name])
             return
         print('\nCONFIG_{0}'.format(item.get_name()))
@@ -232,7 +232,7 @@ class CMDDialog(Dialog):
         print('entered value is {}\n'.format(item.get_user_value()))
 
     @staticmethod
-    def prompt_hex(item, predef={}):
+    def prompt_hex(item, predef):
         if not isinstance(item, JConfigHex):
             return
         if not item.is_visible():
@@ -241,7 +241,7 @@ class CMDDialog(Dialog):
             item.set_user_value(item.get_default_value())
             return
         name = item.get_name()
-        if name in predef:
+        if (predef is not None) and (name in predef):
             item.set_user_value(predef[name])
             return
         print('\nCONFIG_{0}'.format(item.get_name()))

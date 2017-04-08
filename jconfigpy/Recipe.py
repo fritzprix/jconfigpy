@@ -54,7 +54,7 @@ class JConfigRepo:
     def on_update_var(self, var, update_val):
 
         if var in self._var_map:
-            self._var_map.update({var : update_val})
+            self._var_map.update({var: update_val})
         if var in self._unresolved_path:
             self._unresolved_path.update({var: update_val})
 
@@ -68,7 +68,7 @@ class JConfigRepo:
             os.system(cmd)
 
     def copy_output(self, out):
-        os.system('cp {0} {1}'.format(path.join(self._path,out),self._out_path))
+        os.system('cp {0} {1}'.format(path.join(self._path, out), self._out_path))
 
     def resolve_repo(self):
         if len(self._unresolved_path) > 0:
@@ -87,16 +87,24 @@ class JConfigRepo:
             raise OSError('chdir doesn\'t work curdir : {}'.format(path.abspath(os.curdir)))
         if not path.exists(self._pkg):
             raise FileNotExistError('File {} doesn\'t exists'.format(self._pkg))
-        with open(self._pkg ,'r') as fp:
-            package_json = json.load(fp,encoding='utf-8')
+        package_headers = None
+        package_inc = None
+        output = None
+        output_inc = None
+        with open(self._pkg, 'r') as fp:
+            package_json = json.load(fp, encoding='utf-8')
             if package_json['name'] != self._name:
                 raise ValueError('Unexpected Package name : {}'.format(package_json['name']))
             JConfigRepo.build_repo(**package_json)
-            package_headers =  package_json['include']
+            package_headers = package_json['include']
             package_inc = ''
             output_inc = ''
             output = package_json['output']
-            version = package_json['version']
+            # version = package_json['version']
+        assert package_headers is not None
+        assert package_inc is not None
+        assert output is not None
+        assert output_inc is not None
         os.chdir('../')
         for inc in package_headers:
             package_inc += 'INC-y+={0}\n'.format(path.abspath(path.join(self._path, inc)))
@@ -125,18 +133,18 @@ class JConfigRepo:
     def __init__(self, name='repo', var_pub=None, base_dir='./', root_dir=None, var_map=None, **kwargs):
         self._name = name
         self._path = None
-        self._pkg = kwargs.get('pkg','package.json')
+        self._pkg = kwargs.get('pkg', 'package.json')
         self._var_pub = var_pub
         self._base_dir = base_dir
         self._root_dir = root_dir
         self._var_map = dict(var_map)
         self._unresolved_path = {}
         self._url = kwargs.get('url')
-        self._out_path = path.abspath(path.join(self._base_dir,kwargs.get('out','./dep/')))
+        self._out_path = path.abspath(path.join(self._base_dir, kwargs.get('out', './dep/')))
 
         if not isinstance(var_pub, Monitor):
             raise TypeError('var_pub is not instance if {}'.format(str(Monitor)))
-        self._path = path.abspath(path.join(self._base_dir,self._name))
+        self._path = path.abspath(path.join(self._base_dir, self._name))
 
         if '$' in self._path:
             head, tail = path.split(self._path)
@@ -149,4 +157,3 @@ class JConfigRepo:
                         self._unresolved_path.update({urpath: ''})
                     self._var_pub.subscribe_variable_change(urpath, self)
                 head, tail = path.split(head)
-

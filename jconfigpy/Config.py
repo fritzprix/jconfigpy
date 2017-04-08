@@ -88,11 +88,22 @@ class JConfig:
                 elif 'config' in config_type:
                     config_path = config_json[key]['path']
                     config_path = path.abspath(path.join(self._base_dir, config_path))
-                    self._child.append(JConfig(name=key, jconfig_file=config_path, root_dir=self._root, **config_json[key]))
+                    self._child.append(JConfig(name=key,
+                                               jconfig_file=config_path,
+                                               root_dir=self._root,
+                                               **config_json[key]))
                 elif 'recipe' in config_type:
-                    self._recipes.append(JConfigRecipe(key, self._var_pub, self._base_dir, self._var_map,**config_json[key]))
+                    self._recipes.append(JConfigRecipe(key,
+                                                       self._var_pub,
+                                                       self._base_dir,
+                                                       self._var_map,
+                                                       **config_json[key]))
                 elif 'repo' in config_type:
-                    repositoy = JConfigRepo( var_pub=self._var_pub,base_dir=self._base_dir,root_dir=self._root,var_map=self._var_map,**config_json[key])
+                    repositoy = JConfigRepo(var_pub=self._var_pub,
+                                            base_dir=self._base_dir,
+                                            root_dir=self._root,
+                                            var_map=self._var_map,
+                                            **config_json[key])
                     print self._base_dir
                     print self._root
                     repositoy.resolve_repo()
@@ -105,7 +116,7 @@ class JConfig:
         report_str += '<<< Config : {}\n'.format(self._name)
         return report_str
 
-    def __init__(self, name='root', jconfig_file='./config.json', root_dir = None, var_map=None, parent=None, **kwargs):
+    def __init__(self, name='root', jconfig_file='./config.json', root_dir=None, var_map=None, parent=None, **kwargs):
         self._name = name
         self._root = root_dir
         self._jconfig_file = jconfig_file
@@ -128,7 +139,7 @@ class JConfig:
         self._var_pub.get_update(self._var_map)
         self._base_dir = path.abspath(path.abspath(path.dirname(jconfig_file)))
         self._jconfig_file = path.abspath(jconfig_file)
-        autogen_file = path.abspath(path.join(self._base_dir,'./autorecipe.mk'))
+        autogen_file = path.abspath(path.join(self._base_dir, './autorecipe.mk'))
         print autogen_file
         if path.exists(autogen_file):
             os.remove(autogen_file)
@@ -163,3 +174,4 @@ class JConfig:
                 self._var_pub.unsubscribe_variable_change(var, self)
 
     _DEFAULT_FILE = './config.json'
+

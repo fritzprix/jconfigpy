@@ -163,13 +163,13 @@ class JConfigString(JConfigItem):
 
     def to_int(self, val):
         if self.is_visible():
-            return int(val,0)
+            return int(val, 0)
         else:
             return 0
 
     def to_hex(self, val):
         if self.is_visible():
-            return "{:x}".format(int(val,16))
+            return "{:x}".format(int(val, 16))
         else:
             return "0x00"
 
