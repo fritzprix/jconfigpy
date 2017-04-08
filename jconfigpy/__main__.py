@@ -6,7 +6,7 @@ from Dialog import CMDDialog
 from Config import JConfig
 from VariableMonitor import Monitor
 from ErrorType import FileNotExistError
-import Dialog
+from Dialog import Dialog
 
 JCONFIG_HELP_STRING = '---------------------------------------------------------\n' \
                       '*\t\tjconfigpy {maj}.{minor}\t\t\t\t*\n' \
