@@ -2,7 +2,7 @@
 language: python
 
 install:
-    - cd jconfigpy
+    - ls
 
 script:
     - python jconfigpy.py -s -i ../configs/config -t ../example/config.json
