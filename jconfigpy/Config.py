@@ -61,10 +61,8 @@ class JConfig:
 
     def parse(self):
         if len(self._unresolved_path) > 0:
-            '''
-            resolve path before opening the file
-            '''
-            for idx, pv in enumerate(self._unresolved_path):
+            # resolve path before opening the file
+            for pv in self._unresolved_path:
                 path_var = '$' + pv
                 self._jconfig_file = self._jconfig_file.replace(path_var, self._unresolved_path[pv])
         if not path.exists(self._jconfig_file):

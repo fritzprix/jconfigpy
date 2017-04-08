@@ -74,6 +74,16 @@ class JConfigItem:
         rand = JConfigItem.rand
         ctime = JConfigItem.get_time
         this = self.get_user_value()
+        no_opt = (to_int,
+                  to_bool,
+                  this,
+                  ctime,
+                  rand,
+                  to_string,
+                  to_hex,
+                  to_tristate)
+        assert no_opt[0] is not None
+        assert no_opt[-1] is not None
         for key in self._gen_list:
             genlist.update({key: eval(self._gen_list[key])})
         return genlist
