@@ -15,7 +15,7 @@ class Dialog:
         pass
 
     @staticmethod
-    def prompt_config(config, pre_def):
+    def prompt_config(config, pre_def=None):
         pass
 
 
@@ -25,7 +25,7 @@ class CMDDialog(Dialog):
         Dialog.__init__(self)
 
     @staticmethod
-    def prompt_config(config, pre_def):
+    def prompt_config(config, pre_def=None):
         assert isinstance(config, JConfig)
         if not config.is_visible():
             return
@@ -58,7 +58,7 @@ class CMDDialog(Dialog):
             print(hdlin)
 
     @staticmethod
-    def prompt_enum(item, predef):
+    def prompt_enum(item, predef=None):
         if not isinstance(item, JConfigEnum):
             return
         if not item.is_visible():
@@ -94,7 +94,7 @@ class CMDDialog(Dialog):
         print('selected item is {}\n'.format(item.get_user_value()))
 
     @staticmethod
-    def prompt_bool(item, predef):
+    def prompt_bool(item, predef=None):
         if not isinstance(item, JConfigBool):
             return
         if not item.is_visible():
@@ -126,7 +126,7 @@ class CMDDialog(Dialog):
         print('{0} is set to {1}'.format('CONFIG_' + item.get_name(), val))
 
     @staticmethod
-    def prompt_tristate(item, predef):
+    def prompt_tristate(item, predef=None):
         if not isinstance(item, JConfigTristate):
             return
         if not item.is_visible():
@@ -161,7 +161,7 @@ class CMDDialog(Dialog):
         print('{0} is set to {1}'.format('CONFIG_' + item.get_name(), val))
 
     @staticmethod
-    def prompt_string(item, predef):
+    def prompt_string(item, predef=None):
         if not isinstance(item, JConfigString):
             return
         if not item.is_visible():
@@ -196,7 +196,7 @@ class CMDDialog(Dialog):
         print('{0} is set to {1}'.format('COFNIG_{}'.format(item.get_name()), item.get_user_value()))
 
     @staticmethod
-    def prompt_int(item, predef):
+    def prompt_int(item, predef=None):
         if not isinstance(item, JConfigInt):
             return
         if not item.is_visible():
@@ -232,7 +232,7 @@ class CMDDialog(Dialog):
         print('entered value is {}\n'.format(item.get_user_value()))
 
     @staticmethod
-    def prompt_hex(item, predef):
+    def prompt_hex(item, predef=None):
         if not isinstance(item, JConfigHex):
             return
         if not item.is_visible():
