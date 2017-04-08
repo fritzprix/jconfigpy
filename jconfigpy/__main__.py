@@ -8,8 +8,6 @@ from VariableMonitor import Monitor
 from ErrorType import FileNotExistError
 import Dialog
 
-
-
 JCONFIG_HELP_STRING = '---------------------------------------------------------\n' \
                       '*\t\tjconfigpy {maj}.{minor}\t\t\t\t*\n' \
                       '*\t{author}({email})\t\t*\n' \
