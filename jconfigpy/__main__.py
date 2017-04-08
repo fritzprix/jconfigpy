@@ -1,8 +1,8 @@
 #!/usr/bin/python
 import sys
 
-from jconfigpy import CMDDialog
-from jconfigpy import JConfig
+from Dialog import CMDDialog
+from Config import JConfig
 import jconfigpy
 
 JCONFIG_HELP_STRING = '---------------------------------------------------------\n' \
@@ -51,7 +51,7 @@ def main(argv=None):
                 jconfigpy.load_saved_config(argv, conf_dialog)
                 return
 
-    jconfig = JConfig(jconfig_file='example/config.json')
+    jconfig = JConfig(jconfig_file='../example/config.json')
     jconfig.parse()
     print(jconfig)
 

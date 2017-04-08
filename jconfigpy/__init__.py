@@ -131,3 +131,6 @@ def load_saved_config(argv, dialog):
         root_config.write_genlist(agen)
 
         agen.write('#endif\n')
+
+if __name__ == '__main__':
+    print 'hello'
