@@ -1,0 +1,22 @@
+{
+  "FLOAT" : {
+    "type" : "enum",
+    "prompt" : "Select floating point options to be used in compilation",
+    "default" : 0,
+    "enum" : [
+      "soft",
+      "softfp",
+      "hardfp"
+    ],
+    "help" : [
+      "some architecture supports hardware floating point unit. compiler ",
+      "generate different code depending on the floating point unit support.",
+      "it means there can be another set of instruction is required to control",
+      "FPU hardware works properly and can have more registers to save the",
+      "execution context of thread (or task). in ARM gcc, 3 options are provided",
+      "soft : tells the compiler not to use hardware floating point unit and ",
+      "       try to substitute floating point operation with software floating",
+      "       point library code which is not much efficient."
+    ]
+  }
+}
