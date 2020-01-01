@@ -1,0 +1,28 @@
+CONFIG_USE_MMU=n
+CONFIG_DMA=y
+CONFIG_STATIC_LINKED_USER=n
+CONFIG_FLOAT=soft
+CONFIG_UART=y
+CONFIG_SEMAPHORE=n
+CONFIG_SOC_VENDOR=ST_Micro
+CONFIG_SOC_NAME=STM32F401
+CONFIG_TEST_BOOL=y
+CONFIG_MUTEX=y
+CONFIG_STACK_LIMIT=0x2001000
+CONFIG_ARCH=ARM
+CONFIG_TEST_INT=1
+CONFIG_TEST_STRING=0x20000
+CONFIG_RTC=y
+CONFIG_AUTHOR=noname
+CONFIG_TEST_TRISTATE=y
+CONFIG_SUB_ARCH=cortex-m4
+CONFIG_PAGE_SHIFT_SIZE=10
+CONFIG_PAGE_SIZE=1024
+CONFIG_SPI=y
+CONFIG_IIC=y
+include /home/innocentevil/my_work/jconfigpy/example/Makefile
+include /home/innocentevil/my_work/jconfigpy/example/arch/ARM/module/autorecipe.mk
+include /home/innocentevil/my_work/jconfigpy/example/hal/ST_Micro/STM32F401/recipe.mk
+include /home/innocentevil/my_work/jconfigpy/example/kernel/mm/nommu/recipe.mk
+
+DEF+= TEST_STRHEX=20000 CONFIG_PAGE_SIZE=1024 CONFIG_PAGE_SHIFT=a MUTEX_CLASS_KEY=25722
