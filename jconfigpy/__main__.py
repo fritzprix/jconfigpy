@@ -74,6 +74,10 @@ def init_text_mode_config(argv, config_dialog):
         agen.write('#ifndef ___AUTO_GEN_H\n')
         agen.write('#define ___AUTO_GEN_H\n')
 
+        agen.write("\n#ifndef FALSE\n#define FALSE (0 == 1)\n#endif\n")
+        agen.write("\n#ifndef TRUE\n#define TRUE (0 == 0)\n#endif\n")
+
+
         root_config.write_genlist(agen)
 
         agen.write('#endif\n')

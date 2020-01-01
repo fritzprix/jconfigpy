@@ -21,7 +21,11 @@
       "MIPS"
     ],
     "prompt": "Select SoC Vendor of your target hardware",
-    "help": [],
+    "help": [
+    ],
+    "gen-list":{
+      "VENDOR":"to_string(this)"
+    },
     "import": true,
     "export": true
   },

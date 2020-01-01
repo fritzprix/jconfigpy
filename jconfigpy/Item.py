@@ -152,7 +152,7 @@ class JConfigString(JConfigItem):
     ]
 
     def to_string(self, val):
-        return val
+        return '\"{}\"'.format(val)
 
     def get_help(self):
         return self._help
@@ -352,7 +352,7 @@ class JConfigEnum(JConfigItem):
         return "{:x}".format(self.to_int(val))
 
     def to_string(self, val):
-        return val
+        return '\"{}\"'.format(val)
 
     def to_bool(self, val):
         return "y"

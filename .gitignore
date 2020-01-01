@@ -10,7 +10,6 @@ __pycache__/
 env/
 build/
 develop-eggs/
-example/
 dist/
 downloads/
 eggs/
@@ -61,3 +60,4 @@ target/
 /.config
 /*.h
 /example/arch/ARM/module/cdsl/
+/example/arch/ARM/module/dep/
