@@ -1,6 +1,0 @@
-{
-  "ARCH_FAMILY_CONFIG" : {
-    "type" : "config",
-    "path" : "./$ARCH/config.json"
-  }
-}
