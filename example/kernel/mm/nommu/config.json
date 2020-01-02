@@ -1,0 +1,6 @@
+{
+  "NOMMU_RECIPE":{
+    "type":"recipe",
+    "path":"./recipe.mk"
+  }
+}
