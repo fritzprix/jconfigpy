@@ -56,8 +56,11 @@ docs/_build/
 # PyBuilder
 target/
 
+*/dep
+*/source
+
 .idea/*
 /.config
 /*.h
-/example/arch/ARM/module/cdsl/
+/example/arch/ARM/module/source/
 /example/arch/ARM/module/dep/

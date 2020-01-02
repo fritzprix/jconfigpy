@@ -4,4 +4,4 @@ MAINTAINER	fritzprix
 
 RUN	apt-get update
 RUN	git clone https://github.com/fritzprix/jconfigpy.git
-CMD python jconfigpy.py -s -i ./configs/config -t ./example/config.json
+CMD python jconfigpy -s -i ./configs/config -t ./example/config.json

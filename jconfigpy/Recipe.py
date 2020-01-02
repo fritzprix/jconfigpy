@@ -116,7 +116,7 @@ class JConfigRepo:
                 output_inc += 'SLIB-y+={0}\n'.format(out)
             elif '.so' in out:
                 output_inc += 'DLIB-y+={0}\n'.format(out)
-        with open('autorecipe.mk', 'a+') as fp:
+        with open('autorecipe.mk', 'w+') as fp:
             fp.write(output_inc)
             fp.write(package_inc)
             fp.write('REPO-y+={0}\n'.format(self._path))
@@ -144,7 +144,7 @@ class JConfigRepo:
 
         if not isinstance(var_pub, Monitor):
             raise TypeError('var_pub is not instance if {}'.format(str(Monitor)))
-        self._path = path.abspath(path.join(self._base_dir, self._name))
+        self._path = path.abspath(path.join(self._base_dir, 'source'))
 
         if '$' in self._path:
             head, tail = path.split(self._path)
