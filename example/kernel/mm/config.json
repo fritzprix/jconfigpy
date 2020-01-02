@@ -1,0 +1,20 @@
+{
+  "USE_MMU":{
+    "type":"bool",
+    "default":"n"
+  },
+  "MMU_CONFIG":{
+    "type":"config",
+    "depend":{
+      "USE_MMU":"y"
+    },
+    "path":"./mmu/config.json"
+  },
+  "NOMMU_CONFIG":{
+    "type":"config",
+    "depend":{
+      "USE_MMU":"n"
+    },
+    "path":"./nommu/config.json"
+  }
+}
