@@ -44,7 +44,7 @@ class JConfig:
         for child in self._child:
             child.write_recipe(fp, fmt)
 
-    def write_genlist(self, fp, fmt="#define {0} {1}\n"):
+    def write_genlist(self, fp, fmt="#ifndef {0}\n#define {0} {1}\n#endif\n"):
         if not isinstance(fp, file):
             return
         for item in self._items:
