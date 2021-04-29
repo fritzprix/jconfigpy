@@ -10,13 +10,9 @@ from setuptools import setup
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
-
-with open("version", "r") as fp:
-    version = fp.read()
-
 setup(
     name="jconfigpy",
-    version=version,
+    version="0.1.9",
     author="fritzprix",
     author_email="innocentevil0914@gmail.com",
     description="configuration utility which easily integrated into project using gnu make as build system",
