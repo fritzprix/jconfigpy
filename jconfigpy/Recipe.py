@@ -20,7 +20,7 @@ class JConfigRecipe:
     def __del__(self):
         if len(self._unresolved_path) > 0:
             for key in self._unresolved_path:
-                self._var_pub.unsubscribe_variable_change(key)
+                self._var_pub.unsubscribe_variable_change(key,self)
 
     def __init__(self, name='recipe', var_pub=None, base_dir='./', var_map=None, **kwargs):
         self._name = name
@@ -128,7 +128,7 @@ class JConfigRepo:
     def __del__(self):
         if len(self._unresolved_path) > 0:
             for key in self._unresolved_path:
-                self._var_pub.unsubscribe_variable_change(key)
+                self._var_pub.unsubscribe_variable_change(key, self)
 
     def __init__(self, name='repo', var_pub=None, base_dir='./', root_dir=None, var_map=None, **kwargs):
         self._name = name

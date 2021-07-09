@@ -12,7 +12,7 @@ def read(fname):
 
 setup(
     name="jconfigpy",
-    version="0.1.9",
+    version=read("version"),
     author="fritzprix",
     author_email="innocentevil0914@gmail.com",
     description="configuration utility which easily integrated into project using gnu make as build system",
@@ -20,7 +20,7 @@ setup(
     keywords="configuration utility make",
     url="http://github.com/fritzprix/jconfigpy",
     download_url="http://github.com/fritzprix/jconfigpy/archive/{}.tar.gz".format(
-        version),
+        read("version")),
     packages=['jconfigpy', './'],
     long_description=read('README.md'),
     long_description_content_type="text/markdown",

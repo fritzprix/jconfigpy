@@ -1,6 +1,7 @@
 import json
 from os import path
 import os
+from io import IOBase
 from ErrorType import FileNotExistError
 from Item import JConfigEnum
 from Item import JConfigBool
@@ -37,7 +38,7 @@ class JConfig:
         return self._items
 
     def write_recipe(self, fp, fmt="include {0}\n"):
-        if not isinstance(fp, file):
+        if not isinstance(fp, IOBase):
             return
         for recipe in self._recipes:
             fp.write(fmt.format(recipe.get_resolved_path()))
@@ -45,7 +46,7 @@ class JConfig:
             child.write_recipe(fp, fmt)
 
     def write_genlist(self, fp, fmt="#define {0} {1}\n"):
-        if not isinstance(fp, file):
+        if not isinstance(fp, IOBase):
             return
         for item in self._items:
             gen = item.get_resolved_genlist()
@@ -102,8 +103,8 @@ class JConfig:
                                             root_dir=self._root,
                                             var_map=self._var_map,
                                             **config_json[key])
-                    print self._base_dir
-                    print self._root
+                    print(self._base_dir)
+                    print(self._root)
                     repositoy.resolve_repo()
                     self._repos.append(repositoy)
 
@@ -138,7 +139,7 @@ class JConfig:
         self._base_dir = path.abspath(path.abspath(path.dirname(jconfig_file)))
         self._jconfig_file = path.abspath(jconfig_file)
         autogen_file = path.abspath(path.join(self._base_dir, './autorecipe.mk'))
-        print autogen_file
+        print(autogen_file)
         if path.exists(autogen_file):
             os.remove(autogen_file)
 
