@@ -1,4 +1,5 @@
 from os import path
+import io
 
 
 class Monitor:
@@ -28,7 +29,7 @@ class Monitor:
         return self._var_map[var]
 
     def check_depend(self, **kwargs):
-        for key, val in kwargs.iteritems():
+        for key, val in kwargs.items():
             cval = self._var_map.get(key, None)
             if cval is None or cval != val:
                 return False
@@ -65,7 +66,7 @@ class Monitor:
         var_map.update(self._var_map)
 
     def write(self, fp, key=None):
-        if not isinstance(fp, file):
+        if not isinstance(fp, io.IOBase):
             raise TypeError('fp is not instance of file')
         if key is not None and key in self._var_map:
             fp.write(Monitor._FILE_WRITE_FORMAT.format(var=key, val=self._var_map[key]))

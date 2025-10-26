@@ -1,17 +1,18 @@
 import json
 from os import path
 import os
-from ErrorType import FileNotExistError
-from Item import JConfigEnum
-from Item import JConfigBool
-from Item import JConfigHex
-from Item import JConfigInt
-from Item import JConfigString
-from Item import JConfigTristate
+import io
+from .ErrorType import FileNotExistError
+from .Item import JConfigEnum
+from .Item import JConfigBool
+from .Item import JConfigHex
+from .Item import JConfigInt
+from .Item import JConfigString
+from .Item import JConfigTristate
 
-from Recipe import JConfigRecipe
-from Recipe import JConfigRepo
-from VariableMonitor import Monitor
+from .Recipe import JConfigRecipe
+from .Recipe import JConfigRepo
+from .VariableMonitor import Monitor
 
 
 class JConfig:
@@ -37,7 +38,7 @@ class JConfig:
         return self._items
 
     def write_recipe(self, fp, fmt="include {0}\n"):
-        if not isinstance(fp, file):
+        if not isinstance(fp, io.IOBase):
             return
         for recipe in self._recipes:
             fp.write(fmt.format(recipe.get_resolved_path()))
@@ -45,7 +46,7 @@ class JConfig:
             child.write_recipe(fp, fmt)
 
     def write_genlist(self, fp, fmt="#define {0} {1}\n"):
-        if not isinstance(fp, file):
+        if not isinstance(fp, io.IOBase):
             return
         for item in self._items:
             gen = item.get_resolved_genlist()
@@ -68,7 +69,7 @@ class JConfig:
         if not path.exists(self._jconfig_file):
             raise FileNotExistError(self._jconfig_file)
         with open(self._jconfig_file, 'r') as fp:
-            config_json = json.load(fp, encoding='utf-8')
+            config_json = json.load(fp)
             for key in config_json:
                 config_type = config_json[key]['type']
                 if 'enum' in config_type:
@@ -102,8 +103,8 @@ class JConfig:
                                             root_dir=self._root,
                                             var_map=self._var_map,
                                             **config_json[key])
-                    print self._base_dir
-                    print self._root
+                    print(self._base_dir)
+                    print(self._root)
                     repositoy.resolve_repo()
                     self._repos.append(repositoy)
 
@@ -119,7 +120,7 @@ class JConfig:
         self._root = root_dir
         self._jconfig_file = jconfig_file
         self._parent = parent
-        self._var_map = dict(iterable=var_map)
+        self._var_map = dict(var_map) if var_map else {}
         self._unresolved_path = {}
         self._items = []
         self._child = []
@@ -129,8 +130,8 @@ class JConfig:
 
         try:
             self._var_pub = Monitor()
-        except Monitor as var_pub:
-            self._var_pub = var_pub
+        except RuntimeError as e:
+            self._var_pub = Monitor._SINGLE_OBJECT
 
         self._depend = kwargs.get('depend', {})
         self._name = name
@@ -138,7 +139,7 @@ class JConfig:
         self._base_dir = path.abspath(path.abspath(path.dirname(jconfig_file)))
         self._jconfig_file = path.abspath(jconfig_file)
         autogen_file = path.abspath(path.join(self._base_dir, './autorecipe.mk'))
-        print autogen_file
+        print(autogen_file)
         if path.exists(autogen_file):
             os.remove(autogen_file)
 
@@ -164,11 +165,11 @@ class JConfig:
 
     def __del__(self):
         if len(self._unresolved_path) > 0:
-            for upath in enumerate(self._unresolved_path):
+            for upath in self._unresolved_path:
                 self._var_pub.unsubscribe_variable_change(upath, self)
 
         if len(self._var_map) > 0:
-            for var in enumerate(self._var_map):
+            for var in self._var_map:
                 self._var_pub.unsubscribe_variable_change(var, self)
 
     _DEFAULT_FILE = './config.json'

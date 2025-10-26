@@ -4,7 +4,7 @@ import re
 import time
 from os import environ
 
-import VariableMonitor
+from . import VariableMonitor
 
 
 class JConfigItem:
@@ -126,7 +126,7 @@ class JConfigItem:
 
         if len(self._depend) > 0:
             self._visibility = var_pub.check_depend(**self._depend)
-            for var in enumerate(self._depend):
+            for var in self._depend:
                 self._var_pub.subscribe_variable_change(var, self)  # subscribe variable change
 
     def __str__(self):
@@ -140,7 +140,7 @@ class JConfigItem:
     def __del__(self):
         if self._var_pub is None:
             return
-        for var in enumerate(self._depend):
+        for var in self._depend:
             self._var_pub.unsubscribe_variable_change(var, self)
 
 

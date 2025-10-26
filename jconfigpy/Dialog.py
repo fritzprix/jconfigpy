@@ -1,12 +1,12 @@
-from Config import JConfig
-from Config import JConfigEnum
-from Config import JConfigInt
-from Config import JConfigString
-from Config import JConfigHex
-from Config import JConfigBool
-from Config import JConfigTristate
+from .Config import JConfig
+from .Config import JConfigEnum
+from .Config import JConfigInt
+from .Config import JConfigString
+from .Config import JConfigHex
+from .Config import JConfigBool
+from .Config import JConfigTristate
 
-from Item import JConfigItem
+from .Item import JConfigItem
 
 
 class Dialog:
@@ -33,17 +33,17 @@ class CMDDialog(Dialog):
         for item in config.get_items():
             if item.is_visible():
                 item_type = item.get_type()
-                if item_type is 'enum':
+                if item_type == 'enum':
                     CMDDialog.prompt_enum(item, pre_def)
-                elif item_type is 'int':
+                elif item_type == 'int':
                     CMDDialog.prompt_int(item, pre_def)
-                elif item_type is 'hex':
+                elif item_type == 'hex':
                     CMDDialog.prompt_hex(item, pre_def)
-                elif item_type is 'bool':
+                elif item_type == 'bool':
                     CMDDialog.prompt_bool(item, pre_def)
-                elif item_type is 'tristate':
+                elif item_type == 'tristate':
                     CMDDialog.prompt_tristate(item, pre_def)
-                elif item_type is 'string':
+                elif item_type == 'string':
                     CMDDialog.prompt_string(item, pre_def)
 
         for child in config.get_childs():
@@ -78,12 +78,12 @@ class CMDDialog(Dialog):
             print('{0} {1}'.format(idx, ele))
         val = 'h'
         while val == 'h' or val == '':
-            val = raw_input('{0} (0 ~ {1}) : '.format(item.get_prompt(), len(elements) - 1))
+            val = input('{0} (0 ~ {1}) : '.format(item.get_prompt(), len(elements) - 1))
             if val == 'h':
                 CMDDialog.print_help(item)
             elif val == '':
                 val = item.get_default_value()
-                if val is not '':
+                if val != '':
                     item.set_user_value(val)
             else:
                 try:
@@ -109,12 +109,12 @@ class CMDDialog(Dialog):
         print('\nCONFIG_{0}'.format(item.get_name()))
         val = 'h'
         while val == 'h' or val == '':
-            val = raw_input('{0} : '.format(item.get_prompt()))
+            val = input('{0} : '.format(item.get_prompt()))
             if val == 'h':
                 CMDDialog.print_help(item)
             elif val == '':
                 val = item.get_default_value()
-                if val is not '':
+                if val != '':
                     item.set_user_value(val)
             else:
                 try:
@@ -141,12 +141,12 @@ class CMDDialog(Dialog):
         print('\nCONFIG_{0}'.format(item.get_name()))
         val = 'h'
         while val == 'h' or val == '':
-            val = raw_input('{0} : '.format(item.get_prompt()))
+            val = input('{0} : '.format(item.get_prompt()))
             if val == 'h':
                 CMDDialog.print_help(item)
             elif val == '':
                 val = item.get_default_value()
-                if val is not '':
+                if val != '':
                     item.set_user_value(val)
                 else:
                     print('No default value')
@@ -176,12 +176,12 @@ class CMDDialog(Dialog):
         print('\nCONFIG_{0}'.format(item.get_name()))
         val = 'h'
         while val == 'h' or val == '':
-            val = raw_input('{0} : '.format(item.get_prompt()))
+            val = input('{0} : '.format(item.get_prompt()))
             if val == 'h':
                 CMDDialog.print_help(item)
             elif val == '':
                 val = item.get_default_value()
-                if val is not '':
+                if val != '':
                     item.set_user_value(val)
                 else:
                     print('No default value')
@@ -211,13 +211,13 @@ class CMDDialog(Dialog):
         print('\nCONFIG_{0}'.format(item.get_name()))
         val = 'h'
         while val == 'h' or val == '':
-            val = raw_input('{0} : '.format(item.get_prompt()))
+            val = input('{0} : '.format(item.get_prompt()))
             if val == 'h':
                 CMDDialog.print_help(item)
             elif val == '':
                 val = item.get_default_value()
                 print(val)
-                if val is not '':
+                if val != '':
                     item.set_user_value(val)
                 else:
                     print('No default value')
@@ -247,12 +247,12 @@ class CMDDialog(Dialog):
         print('\nCONFIG_{0}'.format(item.get_name()))
         val = 'h'
         while val == 'h' or val == '':
-            val = raw_input('{0} : '.format(item.get_prompt()))
+            val = input('{0} : '.format(item.get_prompt()))
             if val == 'h':
                 CMDDialog.print_help(item)
             elif val == '':
                 val = item.get_default_value()
-                if val is not '':
+                if val != '':
                     item.set_user_value(val)
                 else:
                     print('No default value')

@@ -1,8 +1,8 @@
 import json
 from os import path
 import os
-from ErrorType import FileNotExistError
-from VariableMonitor import Monitor
+from .ErrorType import FileNotExistError
+from .VariableMonitor import Monitor
 
 
 class JConfigRecipe:
@@ -92,7 +92,7 @@ class JConfigRepo:
         output = None
         output_inc = None
         with open(self._pkg, 'r') as fp:
-            package_json = json.load(fp, encoding='utf-8')
+            package_json = json.load(fp)
             if package_json['name'] != self._name:
                 raise ValueError('Unexpected Package name : {}'.format(package_json['name']))
             JConfigRepo.build_repo(**package_json)

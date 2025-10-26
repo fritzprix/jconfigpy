@@ -1,12 +1,12 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 import sys
 from os import path
 
-from Dialog import CMDDialog
-from Config import JConfig
-from VariableMonitor import Monitor
-from ErrorType import FileNotExistError
-from Dialog import Dialog
+from .Dialog import CMDDialog
+from .Config import JConfig
+from .VariableMonitor import Monitor
+from .ErrorType import FileNotExistError
+from .Dialog import Dialog
 
 JCONFIG_HELP_STRING = '---------------------------------------------------------\n' \
                       '*\t\tjconfigpy {maj}.{minor}\t\t\t\t*\n' \
@@ -60,8 +60,8 @@ def init_text_mode_config(argv, config_dialog):
 
     try:
         monitor = Monitor()
-    except Monitor as single_instance:
-        monitor = single_instance
+    except RuntimeError as e:
+        monitor = Monitor._SINGLE_OBJECT
 
     with open(result_file, 'w+') as ofp:
         monitor.write(ofp)
@@ -143,8 +143,8 @@ def load_saved_config(argv, dialog):
 
     try:
         monitor = Monitor()
-    except Monitor as single_instance:
-        monitor = single_instance
+    except RuntimeError as e:
+        monitor = Monitor._SINGLE_OBJECT
 
     with open(result_file, 'w+') as ofp:
         monitor.write(ofp)
