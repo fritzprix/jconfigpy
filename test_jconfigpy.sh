@@ -12,6 +12,11 @@ EXAMPLE_DIR="$SCRIPT_DIR/example"
 TEST_OUTPUT_DIR="/tmp/jconfigpy_test_$$"
 PYTHON3="python3"
 
+# Use development version if PYTHONPATH not set
+if [ -z "$PYTHONPATH" ]; then
+    export PYTHONPATH="$SCRIPT_DIR:$PYTHONPATH"
+fi
+
 # Colors for output
 GREEN='\033[0;32m'
 RED='\033[0;31m'
@@ -297,6 +302,8 @@ main() {
     log_info "Script directory: $SCRIPT_DIR"
     log_info "Example directory: $EXAMPLE_DIR"
     log_info "Test output directory: $TEST_OUTPUT_DIR"
+    log_info "PYTHONPATH: ${PYTHONPATH:-<not set>}"
+    log_info "Using development version from: $SCRIPT_DIR"
     
     local total_tests=0
     local passed_tests=0
@@ -351,10 +358,15 @@ jconfigpy Functional Test Script
 
 Usage: test_jconfigpy.sh [OPTIONS]
 
+DESCRIPTION:
+    This script tests the jconfigpy development version in-place without 
+    requiring installation. It uses PYTHONPATH to load the local modules.
+
 OPTIONS:
     -h, --help      Show this help message
     -v, --verbose   Show verbose output
     --cleanup-only  Only cleanup test files
+    --use-installed Use installed version instead of development version
 
 TESTS:
     1. Module Import Test      - Verify all modules can be imported
@@ -365,9 +377,14 @@ TESTS:
     6. Config Generation Test  - Verify config generation (module mode)
     7. Direct Script Execution - Verify config generation (script mode)
 
+ENVIRONMENT:
+    PYTHONPATH     Will be set to development directory automatically
+    PYTHON3        Python 3 executable to use (default: python3)
+
 EXAMPLE:
-    ./test_jconfigpy.sh              # Run all tests
-    ./test_jconfigpy.sh --cleanup-only  # Clean up test files
+    ./test_jconfigpy.sh                    # Run all tests with dev version
+    ./test_jconfigpy.sh --use-installed    # Run tests with installed version
+    ./test_jconfigpy.sh --cleanup-only     # Clean up test files
 
 HELP
     exit 0
@@ -376,6 +393,11 @@ fi
 if [ "$1" = "--cleanup-only" ]; then
     cleanup
     exit 0
+fi
+
+if [ "$1" = "--use-installed" ]; then
+    # Use installed version - don't modify PYTHONPATH
+    unset PYTHONPATH
 fi
 
 # Run main test suite
