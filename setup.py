@@ -19,9 +19,8 @@ setup(
     license="BSD",
     keywords="configuration utility make",
     url="http://github.com/fritzprix/jconfigpy",
-    download_url="http://github.com/fritzprix/jconfigpy/archive/{}.tar.gz".format(
-        version),
-    packages=['jconfigpy', './'],
+    download_url="http://github.com/fritzprix/jconfigpy/archive/0.2.0.tar.gz",
+    packages=['jconfigpy'],
     python_requires='>=3.6',
     long_description=read('README.md'),
     long_description_content_type="text/markdown",
