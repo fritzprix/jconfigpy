@@ -71,8 +71,9 @@ class Monitor:
         var_map.update(self._var_map)
 
     def write(self, fp, key=None):
-        if not isinstance(fp, io.IOBase):
-            raise TypeError('fp is not instance of file')
+        # Support both io.IOBase and file-like objects
+        if not hasattr(fp, 'write'):
+            raise TypeError('fp must be a file-like object with write() method')
         if key is not None and key in self._var_map:
             fp.write(Monitor._FILE_WRITE_FORMAT.format(var=key, val=self._var_map[key]))
             return
