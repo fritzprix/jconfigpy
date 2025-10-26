@@ -1,12 +1,21 @@
-from .Config import JConfig
-from .Config import JConfigEnum
-from .Config import JConfigInt
-from .Config import JConfigString
-from .Config import JConfigHex
-from .Config import JConfigBool
-from .Config import JConfigTristate
-
-from .Item import JConfigItem
+try:
+    from jconfigpy.Config import JConfig
+    from jconfigpy.Config import JConfigEnum
+    from jconfigpy.Config import JConfigInt
+    from jconfigpy.Config import JConfigString
+    from jconfigpy.Config import JConfigHex
+    from jconfigpy.Config import JConfigBool
+    from jconfigpy.Config import JConfigTristate
+    from jconfigpy.Item import JConfigItem
+except ImportError:
+    from .Config import JConfig
+    from .Config import JConfigEnum
+    from .Config import JConfigInt
+    from .Config import JConfigString
+    from .Config import JConfigHex
+    from .Config import JConfigBool
+    from .Config import JConfigTristate
+    from .Item import JConfigItem
 
 
 class Dialog:

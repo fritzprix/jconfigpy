@@ -1,8 +1,13 @@
 import json
 from os import path
 import os
-from .ErrorType import FileNotExistError
-from .VariableMonitor import Monitor
+
+try:
+    from jconfigpy.ErrorType import FileNotExistError
+    from jconfigpy.VariableMonitor import Monitor
+except ImportError:
+    from .ErrorType import FileNotExistError
+    from .VariableMonitor import Monitor
 
 
 class JConfigRecipe:

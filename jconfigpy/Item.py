@@ -4,7 +4,10 @@ import re
 import time
 from os import environ
 
-from . import VariableMonitor
+try:
+    import jconfigpy.VariableMonitor as VariableMonitor
+except ImportError:
+    from . import VariableMonitor
 
 
 class JConfigItem:

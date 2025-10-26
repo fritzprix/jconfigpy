@@ -2,17 +2,29 @@ import json
 from os import path
 import os
 import io
-from .ErrorType import FileNotExistError
-from .Item import JConfigEnum
-from .Item import JConfigBool
-from .Item import JConfigHex
-from .Item import JConfigInt
-from .Item import JConfigString
-from .Item import JConfigTristate
 
-from .Recipe import JConfigRecipe
-from .Recipe import JConfigRepo
-from .VariableMonitor import Monitor
+try:
+    from jconfigpy.ErrorType import FileNotExistError
+    from jconfigpy.Item import JConfigEnum
+    from jconfigpy.Item import JConfigBool
+    from jconfigpy.Item import JConfigHex
+    from jconfigpy.Item import JConfigInt
+    from jconfigpy.Item import JConfigString
+    from jconfigpy.Item import JConfigTristate
+    from jconfigpy.Recipe import JConfigRecipe
+    from jconfigpy.Recipe import JConfigRepo
+    from jconfigpy.VariableMonitor import Monitor
+except ImportError:
+    from .ErrorType import FileNotExistError
+    from .Item import JConfigEnum
+    from .Item import JConfigBool
+    from .Item import JConfigHex
+    from .Item import JConfigInt
+    from .Item import JConfigString
+    from .Item import JConfigTristate
+    from .Recipe import JConfigRecipe
+    from .Recipe import JConfigRepo
+    from .VariableMonitor import Monitor
 
 
 class JConfig:

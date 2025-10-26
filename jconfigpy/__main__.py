@@ -2,11 +2,20 @@
 import sys
 from os import path
 
-from .Dialog import CMDDialog
-from .Config import JConfig
-from .VariableMonitor import Monitor
-from .ErrorType import FileNotExistError
-from .Dialog import Dialog
+try:
+    # Try absolute import first (for direct script execution)
+    from jconfigpy.Dialog import CMDDialog
+    from jconfigpy.Config import JConfig
+    from jconfigpy.VariableMonitor import Monitor
+    from jconfigpy.ErrorType import FileNotExistError
+    from jconfigpy.Dialog import Dialog
+except ImportError:
+    # Fallback to relative import (for module execution)
+    from .Dialog import CMDDialog
+    from .Config import JConfig
+    from .VariableMonitor import Monitor
+    from .ErrorType import FileNotExistError
+    from .Dialog import Dialog
 
 JCONFIG_HELP_STRING = '---------------------------------------------------------\n' \
                       '*\t\tjconfigpy {maj}.{minor}\t\t\t\t*\n' \
