@@ -67,10 +67,7 @@ def init_text_mode_config(argv, config_dialog):
     root_config = JConfig(jconfig_file=file_name, root_dir=path.abspath('./'))
     config_dialog.prompt_config(root_config)
 
-    try:
-        monitor = Monitor()
-    except RuntimeError as e:
-        monitor = Monitor._SINGLE_OBJECT
+    monitor = Monitor()
 
     with open(result_file, 'w+') as ofp:
         monitor.write(ofp)
@@ -150,10 +147,7 @@ def load_saved_config(argv, dialog):
     root_config = JConfig(jconfig_file=config_file,root_dir=path.abspath('./'))
     dialog.prompt_config(root_config, kv_map)
 
-    try:
-        monitor = Monitor()
-    except RuntimeError as e:
-        monitor = Monitor._SINGLE_OBJECT
+    monitor = Monitor()
 
     with open(result_file, 'w+') as ofp:
         monitor.write(ofp)

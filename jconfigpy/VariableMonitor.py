@@ -7,12 +7,17 @@ class Monitor:
     _SINGLE_OBJECT = None
     _FILE_WRITE_FORMAT = 'CONFIG_{var}={val}\n'
 
+    def __new__(cls):
+        if cls._SINGLE_OBJECT is None:
+            cls._SINGLE_OBJECT = super(Monitor, cls).__new__(cls)
+        return cls._SINGLE_OBJECT
+
     def __init__(self):
-        if Monitor._SINGLE_OBJECT is not None:
-            raise Monitor._SINGLE_OBJECT
-        self._var_map = {}
-        self._sub_map = {}
-        Monitor._SINGLE_OBJECT = self
+        # Only initialize once
+        if not hasattr(self, '_initialized'):
+            self._var_map = {}
+            self._sub_map = {}
+            self._initialized = True
 
     def notify_variable_change(self, var, update_val):
         if var not in self._var_map:

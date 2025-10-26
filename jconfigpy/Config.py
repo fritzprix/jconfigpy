@@ -140,10 +140,7 @@ class JConfig:
         self._repos = []
         self._visibility = True
 
-        try:
-            self._var_pub = Monitor()
-        except RuntimeError as e:
-            self._var_pub = Monitor._SINGLE_OBJECT
+        self._var_pub = Monitor()
 
         self._depend = kwargs.get('depend', {})
         self._name = name
