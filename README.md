@@ -2,6 +2,7 @@
 
 [![PyPI version](https://badge.fury.io/py/jconfigpy.svg)](https://pypi.org/project/jconfigpy/)
 [![Python 3.6+](https://img.shields.io/badge/python-3.6%2B-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > configuration utility compatible to GNU Make
 
@@ -50,4 +51,4 @@ $python jconfigpy.py -s -i ../configs/config -t ../example/config.json
 
 ## Licnese
 
-> BSD-2
+> MIT

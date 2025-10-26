@@ -16,7 +16,7 @@ setup(
     author="fritzprix",
     author_email="innocentevil0914@gmail.com",
     description="configuration utility which easily integrated into project using gnu make as build system",
-    license="BSD",
+    license="MIT",
     keywords="configuration utility make",
     url="http://github.com/fritzprix/jconfigpy",
     download_url="http://github.com/fritzprix/jconfigpy/archive/0.2.0.tar.gz",
@@ -27,6 +27,6 @@ setup(
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Topic :: Utilities",
-        "License :: OSI Approved :: BSD License",
+        "License :: OSI Approved :: MIT License",
     ],
 )
